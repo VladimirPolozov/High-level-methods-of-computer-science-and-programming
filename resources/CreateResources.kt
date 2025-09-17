@@ -1,3 +1,5 @@
+package resources
+
 val root = Resource("ROOT", Int.MAX_VALUE, children = mutableListOf(
     Resource("A", 100, children = mutableListOf(
         Resource("B", 80, children = mutableListOf(
