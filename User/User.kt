@@ -1,12 +1,16 @@
+package User
+
 import java.security.MessageDigest
 import java.security.SecureRandom
 
+// добавить права доступа к ресурсам
 class User(val login: String, val password: String) {
     val passwordHash: ByteArray
     val salt: ByteArray = ByteArray(16).also { SecureRandom().nextBytes(it) }
 
     init {
         passwordHash = hashPasswordWithSalt(password, salt)
+        val login = login
     }
 
     private fun hashPasswordWithSalt(password: String, salt: ByteArray): ByteArray {
