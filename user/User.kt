@@ -8,6 +8,8 @@ class User(val login: String, val password: String) {
     val passwordHash: ByteArray
     val salt: ByteArray = ByteArray(16).also { SecureRandom().nextBytes(it) }
 
+    private val permissions = mutableListOf<Pair<String, MutableSet<String>>>()
+
     init {
         passwordHash = hashPasswordWithSalt(password, salt)
         val login = login
@@ -24,5 +26,31 @@ class User(val login: String, val password: String) {
     fun checkPassword(attempt: String): Boolean {
         val attemptHash = hashPasswordWithSalt(attempt, salt)
         return MessageDigest.isEqual(passwordHash, attemptHash)
+    }
+
+    fun setPermission(path: String, action: String) {
+        val action = action.lowercase()
+        val entry = permissions.find { it.first == path }
+        if (entry != null) {
+            entry.second.add(action)
+        } else {
+            permissions.add(path to mutableSetOf(action))
+        }
+    }
+
+    fun checkPermission(path: String, action: String): Boolean {
+        val action = action.lowercase()
+        val parts = path.split('.')
+        val sb = StringBuilder()
+        for (i in parts.indices) {
+            if (i > 0) sb.append('.')
+            sb.append(parts[i])
+            val prefix = sb.toString()
+            val entry = permissions.find { it.first == prefix }
+            if (entry != null && action in entry.second) {
+                return true
+            }
+        }
+        return false
     }
 }
