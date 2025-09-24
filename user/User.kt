@@ -3,9 +3,20 @@ package user
 import java.security.MessageDigest
 import java.security.SecureRandom
 
+// Действия с документом
+enum class Action { READ, WRITE, EXECUTE }
+// Права доступа к документу
+data class Permission(
+    val resourcePath: String,
+    val actions: Set<Action>
+)
 // добавить права доступа к ресурсам
-class User(val login: String, val password: String) {
-    val passwordHash: ByteArray
+class User(
+    val login: String,
+    val password: String,
+    val permissions: List<Permission>
+) {
+    private val passwordHash: ByteArray
     val salt: ByteArray = ByteArray(16).also { SecureRandom().nextBytes(it) }
 
     init {
