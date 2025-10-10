@@ -1,6 +1,6 @@
 # Чистая архитектура
 ## Описание слоёв приложения
-### Entitie;
+### Entities
 - `User` — data class с полями `login`, `passwordHash`, `salt` (без методов проверки, её выносим в use cases);
 - `Resource` — data class с полями `name`, `maxVolume`, `parent: Resource?`;
 - `Action` — `enum` (`READ`, `WRITE`, `EXECUTE`);
