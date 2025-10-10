@@ -28,7 +28,7 @@
 - [ ] реализовать use cases: `AuthService`, `AccessController`, `VolumeValidationUseCase`;
 ### Repositories
 - [ ] реализовать `InMemoryUserRepository`, `InMemoryResourceRepository`, `RequestProcessor`.
-## Планируемая структура проекта
+### Планируемая структура проекта
 ```
 project-root/
 ├── src/
