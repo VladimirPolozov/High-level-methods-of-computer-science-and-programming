@@ -10,9 +10,16 @@
 ### Use cases
 - `AuthService` проверяет логин/пароль (сравнивает хэш), возвращает результат (`ExitCode`);
 - `AccessController` проверяет права на ресурс по пути, учитывая запрпашиваемые действие (`Action`);
-- `VolumeValidationUseCase` — отдельный use case для проверки запрошенного объема (`maxVolume`);
-- `RequestProcessor` — композитный use case, который последовательно вызывает AuthUseCase, AccessCheckUseCase, VolumeValidationUseCase и возвращает общий ExitCode.
+- `VolumeValidationUseCase` — отдельный use case для проверки запрошенного объема (`maxVolume`).
+### Interface Adapters
+- `AppArgsParser` парсит аргументы CLI, возвращает `AccessRequest` или ошибку;
+- `UserRepository` (интерфейс) с реализацией в `InMemoryUserRepository` (хардкод из CreateUsers.kt);
+- 
 ## План реструктуризации проекта
-Составить план реструктуризации проекта под принципы чистой архитектуры:
-Что нужно вынести в отдельные пакеты.
-Какие интерфейсы/абстракции необходимо добавить
+### Entities
+- вынести data classes: `User` и `Resource`;
+- добавить `enum` `Action`;
+- добавить `enum` `ExitCode`;
+- добавить DTO: `AccessRequest`;
+- удалить логику из `User` и `Resource`;
+- 
