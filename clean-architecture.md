@@ -17,8 +17,8 @@
 - 
 ## План реструктуризации проекта
 ### Entities
-[] вынести data classes: `User` и `Resource`;
-[] добавить `enum` `Action`;
-[] добавить `enum` `ExitCode`;
-[] добавить DTO: `AccessRequest`;
-[] удалить логику из `User` и `Resource`;
+- [ ] вынести data classes: `User` и `Resource`;
+- [ ] добавить `enum` `Action`;
+- [ ] добавить `enum` `ExitCode`;
+- [ ] добавить DTO: `AccessRequest`;
+- [ ] удалить логику из `User` и `Resource`;
