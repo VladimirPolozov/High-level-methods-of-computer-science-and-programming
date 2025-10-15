@@ -47,16 +47,17 @@ project-root/
 │                   │   │   └── ExitCode.kt                           # Enum: SUCCESS(0), UNAUTHORIZED(2), FORBIDDEN(3), etc. (коды выхода)
 │                   │   ├── dto/                                      # DTO для передачи данных (граница слоёв)
 │                   │   │   └── AccessRequest.kt                      # Data class: login, password, path, action: Action, volume: Int
+|                   ├── interfaces/                                   # Здесь интерфейсы
+|                   |    ├── AuthService.kt                           # Интерфейс: authenticate(login, password): User? (аутентификация)
+│                   │    ├── UserRepository.kt                        # Интерфейс: findByLogin(login): User? (абстракция хранения пользователей)
+│                   │    ├── ResourceRepository.kt                    # Интерфейс: findByPath(path): Resource? (поиск по иерархии)
+│                   │    ├── AccessController.kt                      # Интерфейс: checkPermission(user, resource, action): ExitCode (права + наследование)
+│                   │    └── VolumeValidator.kt                       # Интерфейс: validate(volume, resource): ExitCode (лимит объёма)
 │                   ├── application/                                  # Application Layer: Use Cases (бизнес-логика, оркестрация)
-│                   │   └── usecases/                                 # Сервисы и процессор
-│                   │       ├── IAuthService.kt                       # Интерфейс: authenticate(login, password): User? (аутентификация)
-│                   │       ├── IUserRepository.kt                    # Интерфейс: findByLogin(login): User? (абстракция хранения пользователей)
-│                   │       ├── IResourceRepository.kt                # Интерфейс: findByPath(path): Resource? (поиск по иерархии)
-│                   │       ├── IAccessController.kt                  # Интерфейс: checkPermission(user, resource, action): ExitCode (права + наследование)
-│                   │       ├── IVolumeValidator.kt                   # Интерфейс: validate(volume, resource): ExitCode (лимит объёма)
-│                   │       ├── AuthService.kt                        # Implements IAuthService: хэширование SHA-256 + соль, возврат User или null
-│                   │       ├── AccessController.kt                   # Implements IAccessController: навигация по parent, сбор inherited permissions
-│                   │       ├── VolumeValidationUseCase.kt            # Implements IVolumeValidator: volume <= maxVolume && >=0
+│                   │    └── services/                                # Сервисы
+│                   │       ├── AuthService.kt                        # Implements AuthService: хэширование SHA-256 + соль, возврат User или null
+│                   │       ├── AccessController.kt                   # Implements AccessController: навигация по parent, сбор inherited permissions
+│                   │       ├── VolumeValidationUseCase.kt            # Implements VolumeValidator: volume <= maxVolume && >=0
 │                   │       └── RequestProcessor.kt                   # Композит: process(request: AccessRequest): ExitCode (оркестрация: auth → find → access → volume)
 │                   ├── infrastructure/                               # Interface Adapters: Адаптеры (репозитории, парсеры)
 │                   │   └── adapters/                                 # Конкретные реализации интерфейсов
@@ -65,8 +66,10 @@ project-root/
 │                   │       │   └── InMemoryResourceRepository.kt     # Implements IResourceRepository: root Resource, buildTree (parent-ссылки, из CreateResources.kt)
 │                   │       └── parsers/                              # Input adapters
 │                   │           └── AppArgsParser.kt                  # parse(args: Array<String>): AccessRequest? (kotlinx-cli: флаги, справка на -h/invalid)
+│                   │   └── HashPassword.kt                           # хэширует пароль пользователя (работает как паттерн Singltone);
 │                   └── main/                                         # Frameworks & Drivers: Точка входа, инфраструктура
 │                       ├── Main.kt                                   # Entry point: парсинг → фабрика → process → exitProcess(code)
+|                       ├── ExitCodeProcessor.kt                      # обрабатывает исключения и возвращает код завершение программы;
 │                       └── components/                               # Фабрики для DI (простая инъекция)
 │                           └── AppComponents.kt                      # Object: createDefault(): RequestProcessor (создаёт InMemory* + use cases)
 └── (root files: скрипты, docs)
