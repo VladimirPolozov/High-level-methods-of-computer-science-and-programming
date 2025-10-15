@@ -9,15 +9,16 @@
 - `ExitCode` — `enum` с кодами завершения.
 ### Services
 - `AuthService` проверяет логин/пароль (сравнивает хэш), возвращает результат (`ExitCode`);
-- `HashPasswordService` хэширует пароль пользователя (работает как паттерн Singltone);
 - `AccessController` проверяет права на ресурс по пути, учитывая запрпашиваемые действие (`Action`);
 - `VolumeValidationService` проверяет, доступен ли пользователю запрошенный объём (`maxVolume`);
-- `ExitCodeProcessor` обрабатывает исключения и возвращает код завершение программы;
 - `RequestProcessor` вызывает `AuthService`, `AccessController`, `VolumeValidationService`.
 ### Repositories
 - `AppArgsParser` парсит аргументы CLI, возвращает `AccessRequest` или ошибку;
 - `UserRepository` (интерфейс) с реализацией в `InMemoryUserRepository` (хардкод из CreateUsers.kt);
 - аналогичный `ResourceRepository` (интерфейс) с реализацией в `InMemoryResourceRepository`.
+### Утилиты
+- `HashPassword` хэширует пароль пользователя (работает как паттерн Singltone);
+- `ExitCodeProcessor` обрабатывает исключения и возвращает код завершение программы;
 ## План реструктуризации проекта
 ### Entities
 - [ ] вынести data classes: `User` и `Resource`;
@@ -26,10 +27,10 @@
 - [ ] добавить DTO: `AccessRequest`;
 - [ ] удалить логику из `User` и `Resource`.
 ### Services
-- [ ] создать интерфейсы: `IAuthService`, `IResourceRepository`, `IAccessController`, `IVolumeValidator`;
-- [ ] реализовать services: `AuthService`, `AccessController`, `VolumeValidationUseCase`;
+- [ ] создать интерфейсы: `AuthService`, `ResourceRepository`, `AccessController`, `VolumeValidator`;
+- [ ] реализовать сервисы: `AuthService`, `AccessController`, `VolumeValidationService`, `RequestProcessor`;
 ### Repositories
-- [ ] реализовать `InMemoryUserRepository`, `InMemoryResourceRepository`, `RequestProcessor`.
+- [ ] реализовать `InMemoryUserRepository`, `InMemoryResourceRepository`.
 ### Дополнительные "утилиты"
 - [ ] реализовать хэширования
 - [ ] реализовать обработку исключений и возврат кодов приложений
@@ -50,10 +51,8 @@ project-root/
 │                   │   │   └── ExitCode.kt                           # Enum: SUCCESS(0), UNAUTHORIZED(2), FORBIDDEN(3), etc. (коды выхода)
 │                   │   ├── dto/                                      # DTO для передачи данных (граница слоёв)
 │                   │   │   └── AccessRequest.kt                      # Data class: login, password, path, action: Action, volume: Int
-|                   ├── interfaces/                                   # Здесь интерфейсы
+|                   ├── interfaces/                                   # Здесь интерфейсы сервисов
 |                   |    ├── AuthService.kt                           # Интерфейс: authenticate(login, password): User? (аутентификация)
-│                   │    ├── UserRepository.kt                        # Интерфейс: findByLogin(login): User? (абстракция хранения пользователей)
-│                   │    ├── ResourceRepository.kt                    # Интерфейс: findByPath(path): Resource? (поиск по иерархии)
 │                   │    ├── AccessController.kt                      # Интерфейс: checkPermission(user, resource, action): ExitCode (права + наследование)
 │                   │    └── VolumeValidator.kt                       # Интерфейс: validate(volume, resource): ExitCode (лимит объёма)
 │                   ├── application/                                  # Application Layer: Use Cases (бизнес-логика, оркестрация)
@@ -64,6 +63,9 @@ project-root/
 │                   │       └── RequestProcessor.kt                   # Композит: process(request: AccessRequest): ExitCode (оркестрация: auth → find → access → volume)
 │                   ├── infrastructure/                               # Interface Adapters: Адаптеры (репозитории, парсеры)
 │                   │   └── adapters/                                 # Конкретные реализации интерфейсов
+│                   │       ├── interfaces/                           # интерфейс репозиториев
+│                   │           ├── UserRepository.kt                 # Интерфейс: findByLogin(login): User? (абстракция хранения пользователей)
+│                   │           └── ResourceRepository.kt             # Интерфейс: findByPath(path): Resource? (поиск по иерархии)
 │                   │       ├── repositories/                         # In-memory хранилища (хардкод)
 │                   │       │   ├── InMemoryUserRepository.kt         # Implements IUserRepository: listOf<User> (из CreateUsers.kt, с хэшами)
 │                   │       │   └── InMemoryResourceRepository.kt     # Implements IResourceRepository: root Resource, buildTree (parent-ссылки, из CreateResources.kt)
