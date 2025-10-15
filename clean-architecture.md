@@ -7,11 +7,13 @@
 - `Permission` — набор разрешённых Action для пользователя на ресурс;
 - `AccessRequest` — DTO с полями: `login, password, resourcePath, action, requestedVolume;
 - `ExitCode` — `enum` с кодами завершения.
-### Use cases
+### Services
 - `AuthService` проверяет логин/пароль (сравнивает хэш), возвращает результат (`ExitCode`);
+- `HashPasswordService` хэширует пароль пользователя (работает как паттерн Singltone);
 - `AccessController` проверяет права на ресурс по пути, учитывая запрпашиваемые действие (`Action`);
-- `VolumeValidationUseCase` — отдельный use case для проверки запрошенного объема (`maxVolume`);
-- `RequestProcessor` - композитный use case, который последовательно вызывает `AuthUseCase`, `AccessCheckUseCase`, `VolumeValidationUseCase` и возвращает общий `ExitCode`.
+- `VolumeValidationService` проверяет, доступен ли пользователю запрошенный объём (`maxVolume`);
+- `ExitCodeProcessor` обрабатывает исключения и возвращает код завершение программы;
+- `RequestProcessor` вызывает `AuthService`, `AccessController`, `VolumeValidationService`.
 ### Repositories
 - `AppArgsParser` парсит аргументы CLI, возвращает `AccessRequest` или ошибку;
 - `UserRepository` (интерфейс) с реализацией в `InMemoryUserRepository` (хардкод из CreateUsers.kt);
