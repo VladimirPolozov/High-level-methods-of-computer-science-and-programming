@@ -25,11 +25,14 @@
 - [ ] добавить `enum` `ExitCode`;
 - [ ] добавить DTO: `AccessRequest`;
 - [ ] удалить логику из `User` и `Resource`.
-### Use cases
+### Services
 - [ ] создать интерфейсы: `IAuthService`, `IResourceRepository`, `IAccessController`, `IVolumeValidator`;
-- [ ] реализовать use cases: `AuthService`, `AccessController`, `VolumeValidationUseCase`;
+- [ ] реализовать services: `AuthService`, `AccessController`, `VolumeValidationUseCase`;
 ### Repositories
 - [ ] реализовать `InMemoryUserRepository`, `InMemoryResourceRepository`, `RequestProcessor`.
+### Дополнительные "утилиты"
+- [ ] реализовать хэширования
+- [ ] реализовать обработку исключений и возврат кодов приложений
 ### Планируемая структура проекта
 ```
 project-root/
