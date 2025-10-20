@@ -1,0 +1,1 @@
+// Интерфейс: validate(volume, resource): ExitCode (лимит объёма)

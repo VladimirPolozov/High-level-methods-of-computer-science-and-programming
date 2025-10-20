@@ -59,18 +59,17 @@ project-root/
 │                   │    └── services/                                # Сервисы
 │                   │       ├── AuthService.kt                        # Implements AuthService: хэширование SHA-256 + соль, возврат User или null
 │                   │       ├── AccessController.kt                   # Implements AccessController: навигация по parent, сбор inherited permissions
-│                   │       ├── VolumeValidationUseCase.kt            # Implements VolumeValidator: volume <= maxVolume && >=0
+│                   │       ├── VolumeValidator.kt                    # Implements VolumeValidator: volume <= maxVolume && >=0
 │                   │       └── RequestProcessor.kt                   # Композит: process(request: AccessRequest): ExitCode (оркестрация: auth → find → access → volume)
 │                   ├── infrastructure/                               # Interface Adapters: Адаптеры (репозитории, парсеры)
-│                   │   └── adapters/                                 # Конкретные реализации интерфейсов
-│                   │       ├── interfaces/                           # интерфейс репозиториев
-│                   │           ├── UserRepository.kt                 # Интерфейс: findByLogin(login): User? (абстракция хранения пользователей)
-│                   │           └── ResourceRepository.kt             # Интерфейс: findByPath(path): Resource? (поиск по иерархии)
-│                   │       ├── repositories/                         # In-memory хранилища (хардкод)
-│                   │       │   ├── InMemoryUserRepository.kt         # Implements IUserRepository: listOf<User> (из CreateUsers.kt, с хэшами)
-│                   │       │   └── InMemoryResourceRepository.kt     # Implements IResourceRepository: root Resource, buildTree (parent-ссылки, из CreateResources.kt)
-│                   │       └── parsers/                              # Input adapters
-│                   │           └── AppArgsParser.kt                  # parse(args: Array<String>): AccessRequest? (kotlinx-cli: флаги, справка на -h/invalid)
+│                   │   ├── adapters/                                 # Конкретные реализации интерфейсов
+│                   │   │   ├── interfaces/                           # интерфейс репозиториев
+│                   │   │   │   ├── UserRepository.kt                 # Интерфейс: findByLogin(login): User? (абстракция хранения пользователей)
+│                   │   │   │   └── ResourceRepository.kt             # Интерфейс: findByPath(path): Resource? (поиск по иерархии)
+│                   │   │   ├── repositories/                         # In-memory хранилища (хардкод)
+│                   │   │   │   ├── InMemoryUserRepository.kt         # Implements IUserRepository: listOf<User> (из CreateUsers.kt, с хэшами)
+│                   │   │   │   └── InMemoryResourceRepository.kt     # Implements IResourceRepository: root Resource, buildTree (parent-ссылки, из CreateResources.kt)
+│                   │   │   └── AppArgsParser.kt                      # parse(args: Array<String>): AccessRequest? (kotlinx-cli: флаги, справка на -h/invalid)
 │                   │   └── HashPassword.kt                           # хэширует пароль пользователя (работает как паттерн Singltone);
 │                   └── main/                                         # Frameworks & Drivers: Точка входа, инфраструктура
 │                       ├── Main.kt                                   # Entry point: парсинг → фабрика → process → exitProcess(code)

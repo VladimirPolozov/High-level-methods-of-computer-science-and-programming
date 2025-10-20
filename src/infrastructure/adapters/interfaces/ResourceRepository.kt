@@ -1,0 +1,1 @@
+// Интерфейс: findByPath(path): Resource? (поиск по иерархии)
