@@ -1,0 +1,1 @@
+// Enum: READ, WRITE, EXECUTE (права доступа)

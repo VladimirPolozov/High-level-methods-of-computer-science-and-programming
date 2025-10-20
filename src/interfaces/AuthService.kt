@@ -1,0 +1,1 @@
+// Интерфейс: authenticate(login, password): User? (аутентификация)

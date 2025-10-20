@@ -1,0 +1,1 @@
+// Implements AccessController: навигация по parent, сбор inherited permissions
