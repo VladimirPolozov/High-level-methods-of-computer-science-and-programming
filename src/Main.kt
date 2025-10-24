@@ -66,6 +66,34 @@ fun main(args: Array<String>) {
     } catch (e: Exception) {
         println("Неверный формат запуска. Используйте -h для справки.")
         kotlin.system.exitProcess(7) // неверный формат
+fun main(args: Array<String>) {
+    val parser = ArgParser("app")
+
+    val login by parser.option(ArgType.String, description = "User login")
+    val password by parser.option(ArgType.String, description = "User password")
+    val action by parser.option(ArgType.String, description = "Action: read, write, execute")
+    val resourcePath by parser.option(ArgType.String, description = "Resource path (A.B.C)")
+    val volume by parser.option(ArgType.Int, description = "Requested volume")
+    val help by parser.option(ArgType.Boolean, shortName = "h", description = "Show help")
+
+    try {
+        parser.parse(args)
+    } catch (e: HelpException) {
+        exitProcess(1)
+    } catch (e: ParseException) {
+        exitProcess(7)
+    } catch (e: Exception) {
+        exitProcess(7)
+    }
+
+    if (help == true) {
+        println("Справка по программе:")
+        println("--login <user>       Логин пользователя")
+        println("--password <pass>    Пароль пользователя")
+        println("--action <read/write/execute>   Действие")
+        println("--resource <path>    Путь до ресурса")
+        println("--volume <num>       Объём запрашиваемого ресурса")
+        exitProcess(1)
     }
 
     val user = users.find { it.login == login } ?: exitProcess(3)
