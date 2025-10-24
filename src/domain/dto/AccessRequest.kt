@@ -1,0 +1,1 @@
+// Data class: login, password, path, action: Action, volume: Int

@@ -1,0 +1,1 @@
+// Интерфейс: checkPermission(user, resource, action): ExitCode (права + наследование)

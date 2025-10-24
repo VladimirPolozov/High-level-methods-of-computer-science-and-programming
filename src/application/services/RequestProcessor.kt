@@ -1,0 +1,1 @@
+// Композит: process(request: AccessRequest): ExitCode (оркестрация: auth → find → access → volume)
