@@ -51,8 +51,12 @@ project-root/
 │                   │   │   └── ExitCode.kt                           # Enum: SUCCESS(0), UNAUTHORIZED(2), FORBIDDEN(3), etc. (коды выхода)
 │                   │   ├── dto/                                      # DTO для передачи данных (граница слоёв)
 │                   │   │   └── AccessRequest.kt                      # Data class: login, password, path, action: Action, volume: Int
-|                   ├── interfaces/                                   # Здесь интерфейсы сервисов
-|                   |    ├── AuthService.kt                           # Интерфейс: authenticate(login, password): User? (аутентификация)
+│                   ├── interfaces/                                   # Здесь интерфейсы сервисов
+│                   │    ├── AuthService.kt                           # Интерфейс: authenticate(login, password): User? (аутентификация)
+│                   │    ├── AccessController.kt                      # Интерфейс: checkPermission(user, resource, action): ExitCode (права + наследование)
+│                   │    └── VolumeValidator.kt                       # Интерфейс: validate(volume, resource): ExitCode (лимит объёма)
+│                   ├── implementations/                              # Здесь реализация интерфейсов сервисов
+│                   │    ├── AuthService.kt                           # Интерфейс: authenticate(login, password): User? (аутентификация)
 │                   │    ├── AccessController.kt                      # Интерфейс: checkPermission(user, resource, action): ExitCode (права + наследование)
 │                   │    └── VolumeValidator.kt                       # Интерфейс: validate(volume, resource): ExitCode (лимит объёма)
 │                   ├── application/                                  # Application Layer: Use Cases (бизнес-логика, оркестрация)
