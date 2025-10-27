@@ -1,8 +1,8 @@
+package app
 import kotlinx.cli.*
 import user.*
 import resources.*
 import kotlin.system.exitProcess
-import kotlin.KotlinVersion
 
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
@@ -23,7 +23,7 @@ fun main(args: Array<String>) {
             -h, --help       Show help
             """.trimIndent()
         )
-        kotlin.system.exitProcess(1)
+        exitProcess(1)
     }
 
     val login by parser.option(
@@ -65,7 +65,7 @@ fun main(args: Array<String>) {
         parser.parse(args)
     } catch (e: Exception) {
         println("Неверный формат запуска. Используйте -h для справки.")
-        kotlin.system.exitProcess(7) // неверный формат
+        exitProcess(7) // неверный формат
 fun main(args: Array<String>) {
     val parser = ArgParser("app")
 
