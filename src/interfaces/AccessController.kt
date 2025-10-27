@@ -2,6 +2,9 @@
 
 package interfaces
 
+import ExitCode
+import user.User
+
 interface AccessController {
     fun checkPermission(
         user: User,

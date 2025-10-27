@@ -1,3 +1,5 @@
+import user.User
+
 // Интерфейс: authenticate(login, password): User? (аутентификация)
 
 interface AuthService {

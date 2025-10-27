@@ -1,18 +1,19 @@
+import resources.CreateResources
+import resources.Resource
+
 // Implements IResourceRepository: root Resource, buildTree (parent-ссылки, из CreateResources.kt)
 
-package resources
+class InMemoryResourceRepository : ResourceRepository {
+    private val root = CreateResources.all()
 
-val oot = Resource("ROOT", Int.MAX_VALUE, children = mutableListOf(
-    Resource("A", 100, children = mutableListOf(
-        Resource("B", 80, children = mutableListOf(
-            Resource("C", 50, children = mutableListOf(
-                Resource("f_d", 30)
-            )),
-            Resource("G", 20)
-        )),
-        Resource("A8B", 40)
-    )),
-    Resource("X", 60, children = mutableListOf(
-        Resource("Y", 10)
-    ))
-))
+    override fun findByPath(path: String): Resource? {
+        val parts = path.split(".")
+        return findRecursive(root, parts)
+    }
+
+    private fun findRecursive(current: Resource?, parts: List<String>): Resource? {
+        if (current == null) return null
+        if (current.name == parts.last()) return current
+        return findRecursive(current.parent, parts)
+    }
+}
