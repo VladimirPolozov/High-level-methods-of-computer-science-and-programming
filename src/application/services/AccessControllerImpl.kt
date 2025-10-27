@@ -1,18 +1,32 @@
 package application.services
 
+import domain.entities.Action
 import domain.enums.ExitCode
 import interfaces.AccessController
 import domain.entities.User
-import infrastructure.adapters.repositories.InMemoryResourceRepository
+import infrastructure.adapters.interfaces.ResourceRepository
 
-// Implements AccessController: навигация по parent, сбор inherited permissions
 
-class AccessControllerImpl(resourceRepo: InMemoryResourceRepository) : AccessController {
+class AccessControllerImpl(private val resourceRepository: ResourceRepository) : AccessController {
     override fun checkPermission(
         user: User,
         resourcePath: String,
-        action: String
+        action: Action
     ): ExitCode {
+        if (resourceRepository.findByPath(resourcePath) == null) {
+            return ExitCode.FORBIDDEN
+        }
 
+        val parts = resourcePath.split('.')
+        for (i in parts.size downTo 1) {
+            val currentPath = parts.subList(0, i).joinToString(".")
+
+            val allowedActions = user.permissions[currentPath]
+            if (allowedActions != null && action in allowedActions) {
+                return ExitCode.SUCCESS
+            }
+        }
+
+        return ExitCode.FORBIDDEN
     }
 }

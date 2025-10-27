@@ -4,8 +4,8 @@ import domain.entities.Resource
 import domain.enums.ExitCode
 import interfaces.VolumeValidator
 
-// Implements VolumeValidator: volume <= maxVolume && >=0
 
+// Implements VolumeValidator: volume <= maxVolume && >=0
 class VolumeValidatorImpl : VolumeValidator {
     override fun validate(volume: Int, resource: Resource): ExitCode {
         if (volume < 0) return ExitCode.INVALID_FORMAT

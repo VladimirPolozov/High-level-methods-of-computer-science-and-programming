@@ -4,13 +4,14 @@ import application.services.AccessControllerImpl
 import application.services.AuthServiceImpl
 import application.services.RequestProcessor
 import application.services.VolumeValidatorImpl
-import infrastructure.adapters.repositories.InMemoryResourceRepository
-import infrastructure.adapters.repositories.InMemoryUserRepository
+import infrastructure.adapters.repositories.InMemoryResourceRepositoryImpl
+import infrastructure.adapters.repositories.InMemoryUserRepositoryImpl
+
 
 object AppComponents {
     fun createDefault(): RequestProcessor {
-        val userRepo = InMemoryUserRepository()
-        val resourceRepo = InMemoryResourceRepository()
+        val userRepo = InMemoryUserRepositoryImpl
+        val resourceRepo = InMemoryResourceRepositoryImpl
 
         val auth = AuthServiceImpl(userRepo)
         val access = AccessControllerImpl(resourceRepo)

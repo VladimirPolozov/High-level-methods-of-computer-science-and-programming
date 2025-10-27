@@ -63,8 +63,8 @@ project-root/
 │   │   │   │   ├── UserRepository.kt                 # Интерфейс: findByLogin(login): User? (абстракция хранения пользователей)
 │   │   │   │   └── ResourceRepository.kt             # Интерфейс: findByPath(path): Resource? (поиск по иерархии)
 │   │   │   ├── repositories/                         # In-memory хранилища (хардкод)
-│   │   │   │   ├── InMemoryUserRepository.kt         # Implements IUserRepository: listOf<User> (из CreateUsers.kt, с хэшами)
-│   │   │   │   └── InMemoryResourceRepository.kt     # Implements IResourceRepository: root Resource, buildTree (parent-ссылки, из CreateResources.kt)
+│   │   │   │   ├── InMemoryUserRepository.kt         # Implements IUserRepository: listOf<User>
+│   │   │   │   └── InMemoryResourceRepository.kt     # Implements IResourceRepository: root Resource, buildTree (parent-ссылки)
 │   │   │   └── AppArgsParser.kt                      # parse(args: Array<String>): AccessRequest? (kotlinx-cli: флаги, справка на -h/invalid)
 │   │   └── HashPassword.kt                           # хэширует пароль пользователя (работает как паттерн Singltone);
 │   └── app/                                          # Frameworks & Drivers: Точка входа, инфраструктура

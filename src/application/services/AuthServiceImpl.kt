@@ -2,12 +2,12 @@ package application.services
 
 import domain.entities.User
 import infrastructure.HashPassword
-import infrastructure.adapters.repositories.InMemoryUserRepository
+import infrastructure.adapters.interfaces.UserRepository
 import interfaces.AuthService
 
-// Implements AuthService: хэширование SHA-256 + соль, возврат User или null
 
-class AuthServiceImpl(private val userRepository: InMemoryUserRepository) : AuthService {
+// Implements AuthService: хэширование SHA-256 + соль, возврат User или null
+class AuthServiceImpl(private val userRepository: UserRepository) : AuthService {
 
     override fun authenticate(login: String, password: String): User? {
         val user = userRepository.findByLogin(login) ?: return null

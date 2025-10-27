@@ -1,14 +1,15 @@
 package interfaces
 
+import domain.entities.Action
 import domain.enums.ExitCode
 import domain.entities.User
 
-// Интерфейс: checkPermission(user, resource, action): ExitCode (права + наследование)
 
+// Интерфейс: checkPermission(user, resource, action): ExitCode (права + наследование)
 interface AccessController {
     fun checkPermission(
         user: User,
         resourcePath: String,
-        action: String
+        action: Action
     ): ExitCode
 }

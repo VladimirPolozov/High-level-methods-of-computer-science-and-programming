@@ -6,8 +6,8 @@ import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.required
 
-// parse(args: Array<String>): AccessRequest? (kotlinx-cli: флаги, справка на -h/invalid)
 
+// parse(args: Array<String>): AccessRequest? (kotlinx-cli: флаги, справка на -h/invalid)
 object AppArgsParser {
     fun parse(args: Array<String>): AccessRequest? {
         val parser = ArgParser("resource-access")

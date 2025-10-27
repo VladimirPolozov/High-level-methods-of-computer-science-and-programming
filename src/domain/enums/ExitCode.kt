@@ -1,7 +1,7 @@
 package domain.enums
 
-// Enum: SUCCESS(0), UNAUTHORIZED(2), FORBIDDEN(3), etc. (коды выхода)
 
+// Enum: SUCCESS(0), UNAUTHORIZED(2), FORBIDDEN(3), etc. (коды выхода)
 enum class ExitCode(val code: Int) {
     SUCCESS(0),
     HELP(1),

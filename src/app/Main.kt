@@ -3,6 +3,7 @@ import app.components.AppComponents
 import domain.enums.ExitCode
 import infrastructure.adapters.AppArgsParser
 
+
 fun main(args: Array<String>) {
     val request = AppArgsParser.parse(args)
     if (args.contains("-h") || args.contains("--help") || request == null) {
