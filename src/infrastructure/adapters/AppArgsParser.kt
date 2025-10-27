@@ -1,5 +1,12 @@
-// parse(args: Array<String>): AccessRequest? (kotlinx-cli: флаги, справка на -h/invalid)
+package infrastructure.adapters
 
+import domain.dto.AccessRequest
+import domain.entities.Action
+import kotlinx.cli.ArgParser
+import kotlinx.cli.ArgType
+import kotlinx.cli.required
+
+// parse(args: Array<String>): AccessRequest? (kotlinx-cli: флаги, справка на -h/invalid)
 
 object AppArgsParser {
     fun parse(args: Array<String>): AccessRequest? {

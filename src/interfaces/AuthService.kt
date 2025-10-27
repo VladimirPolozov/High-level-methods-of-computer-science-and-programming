@@ -1,4 +1,6 @@
-import user.User
+package interfaces
+
+import domain.entities.User
 
 // Интерфейс: authenticate(login, password): User? (аутентификация)
 

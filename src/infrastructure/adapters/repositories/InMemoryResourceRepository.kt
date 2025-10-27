@@ -1,5 +1,8 @@
+package infrastructure.adapters.repositories
+
+import infrastructure.adapters.interfaces.ResourceRepository
 import resources.CreateResources
-import resources.Resource
+import domain.entities.Resource
 
 // Implements IResourceRepository: root Resource, buildTree (parent-ссылки, из CreateResources.kt)
 

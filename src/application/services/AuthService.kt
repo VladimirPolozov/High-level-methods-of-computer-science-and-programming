@@ -1,8 +1,11 @@
-import user.User
+package application.services
+
+import domain.entities.User
+import infrastructure.HashPassword
+import infrastructure.adapters.repositories.InMemoryUserRepository
+import interfaces.AuthService
 
 // Implements AuthService: хэширование SHA-256 + соль, возврат User или null
-
-import user.InMemoryUserRepository
 
 class AuthServiceImpl(private val userRepository: InMemoryUserRepository) : AuthService {
 

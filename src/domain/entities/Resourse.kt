@@ -1,6 +1,5 @@
-package resources
+package domain.entities
 
-import Action
 import java.util.Collections.emptyMap
 
 data class Resource(

@@ -1,12 +1,13 @@
-// Implements AccessController: навигация по parent, сбор inherited permissions
-
 package application.services
 
-import ExitCode
+import domain.enums.ExitCode
 import interfaces.AccessController
-import user.User
+import domain.entities.User
+import infrastructure.adapters.repositories.InMemoryResourceRepository
 
-class AccessControllerImpl : AccessController {
+// Implements AccessController: навигация по parent, сбор inherited permissions
+
+class AccessControllerImpl(resourceRepo: InMemoryResourceRepository) : AccessController {
     override fun checkPermission(
         user: User,
         resourcePath: String,

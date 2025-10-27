@@ -1,3 +1,6 @@
+package app
+
+import domain.enums.ExitCode
 import kotlin.system.exitProcess
 
 // обрабатывает исключения и возвращает код завершение программы;

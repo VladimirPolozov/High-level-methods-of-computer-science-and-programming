@@ -1,10 +1,15 @@
-import application.services.AccessController
+package application.services
+
+import domain.dto.AccessRequest
+import domain.enums.ExitCode
+import infrastructure.adapters.interfaces.ResourceRepository
+import interfaces.VolumeValidator
 
 // Композит: process(request: AccessRequest): ExitCode (оркестрация: auth → find → access → volume)
 
 class RequestProcessor(
     private val authService: AuthServiceImpl,
-    private val accessController: AccessController,
+    private val accessController: AccessControllerImpl,
     private val volumeValidator: VolumeValidator,
     private val resourceRepository: ResourceRepository
 ) {

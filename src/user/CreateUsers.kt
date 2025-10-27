@@ -1,5 +1,8 @@
 package user
 
+import domain.entities.User
+import infrastructure.HashPassword
+
 object CreateUsers {
     fun all(): List<User> {
         val salt1 = HashPassword.generateSalt()

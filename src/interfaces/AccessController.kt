@@ -1,9 +1,9 @@
-// Интерфейс: checkPermission(user, resource, action): ExitCode (права + наследование)
-
 package interfaces
 
-import ExitCode
-import user.User
+import domain.enums.ExitCode
+import domain.entities.User
+
+// Интерфейс: checkPermission(user, resource, action): ExitCode (права + наследование)
 
 interface AccessController {
     fun checkPermission(

@@ -1,5 +1,12 @@
 package app.components
 
+import application.services.AccessControllerImpl
+import application.services.AuthServiceImpl
+import application.services.RequestProcessor
+import application.services.VolumeValidatorImpl
+import infrastructure.adapters.repositories.InMemoryResourceRepository
+import infrastructure.adapters.repositories.InMemoryUserRepository
+
 object AppComponents {
     fun createDefault(): RequestProcessor {
         val userRepo = InMemoryUserRepository()

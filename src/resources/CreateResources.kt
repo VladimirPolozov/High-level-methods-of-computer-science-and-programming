@@ -1,5 +1,8 @@
 package resources
 
+import domain.entities.Action
+import domain.entities.Resource
+
 object CreateResources {
     fun all(): Resource {
         val root = Resource("A", 100)

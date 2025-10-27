@@ -1,1 +1,5 @@
-// хэширует пароль пользователя (работает как паттерн Singltone)
+package infrastructure// хэширует пароль пользователя (работает как паттерн Singleton)
+
+class HashPassword {
+
+}

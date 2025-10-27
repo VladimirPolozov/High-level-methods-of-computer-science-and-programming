@@ -1,13 +1,7 @@
 package app
 import app.components.AppComponents
-import kotlinx.cli.*
-import user.*
-import resources.*
-import kotlin.system.exitProcess
-
-import kotlinx.cli.ArgParser
-import kotlinx.cli.ArgType
-import kotlinx.cli.required
+import domain.enums.ExitCode
+import infrastructure.adapters.AppArgsParser
 
 fun main(args: Array<String>) {
     val request = AppArgsParser.parse(args)
