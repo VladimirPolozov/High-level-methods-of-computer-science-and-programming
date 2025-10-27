@@ -6,7 +6,7 @@ import domain.entities.User
 import infrastructure.HashPassword
 
 
-// Implements IUserRepository: listOf<User> (из CreateUsers.kt, с хэшами)
+// In-memory репозиторий пользователей: хранит захардкоженных пользователей с хэшами паролей и правами доступа
 object InMemoryUserRepositoryImpl : UserRepository {
 
     private val users: Map<String, User> = buildUsers()

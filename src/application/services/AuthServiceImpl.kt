@@ -6,7 +6,7 @@ import infrastructure.adapters.interfaces.UserRepository
 import interfaces.AuthService
 
 
-// Implements AuthService: хэширование SHA-256 + соль, возврат User или null
+// Реализует аутентификацию: проверяет логин и пароль через хэш SHA-256 с солью, возвращает пользователя или null
 class AuthServiceImpl(private val userRepository: UserRepository) : AuthService {
 
     override fun authenticate(login: String, password: String): User? {

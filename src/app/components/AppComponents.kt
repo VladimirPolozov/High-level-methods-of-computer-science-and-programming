@@ -8,6 +8,7 @@ import infrastructure.adapters.repositories.InMemoryResourceRepositoryImpl
 import infrastructure.adapters.repositories.InMemoryUserRepositoryImpl
 
 
+// Фабрика компонентов: собирает и возвращает готовый RequestProcessor с in-memory репозиториями и сервисами
 object AppComponents {
     fun createDefault(): RequestProcessor {
         val userRepo = InMemoryUserRepositoryImpl

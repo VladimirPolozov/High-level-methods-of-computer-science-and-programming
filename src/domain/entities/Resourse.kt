@@ -1,10 +1,8 @@
 package domain.entities
 
-import java.util.Collections.emptyMap
 
-
+// Data class ресурса: содержит имя, максимальный объём
 data class Resource(
     val name: String,
-    val maxVolume: Int,
-    val permissions: Map<String, Set<Action>> = emptyMap()
+    val maxVolume: Int
 )

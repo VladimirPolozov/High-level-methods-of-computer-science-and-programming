@@ -7,7 +7,7 @@ import kotlinx.cli.ArgType
 import kotlinx.cli.required
 
 
-// parse(args: Array<String>): AccessRequest? (kotlinx-cli: флаги, справка на -h/invalid)
+// Парсит аргументы командной строки через kotlinx-cli, возвращает AccessRequest или null (включая обработку --help и невалидных данных)
 object AppArgsParser {
     fun parse(args: Array<String>): AccessRequest? {
         val parser = ArgParser("resource-access")

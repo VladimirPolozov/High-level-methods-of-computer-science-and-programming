@@ -1,7 +1,7 @@
 package domain.enums
 
 
-// Enum: SUCCESS(0), UNAUTHORIZED(2), FORBIDDEN(3), etc. (коды выхода)
+// Коды завершения программы: SUCCESS(0) и ошибки (2–8), включая аутентификацию, доступ, формат и лимиты
 enum class ExitCode(val code: Int) {
     SUCCESS(0),
     HELP(1),

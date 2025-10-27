@@ -5,7 +5,7 @@ import java.security.SecureRandom
 import java.util.Base64
 
 
-// хэширует пароль пользователя (работает как паттерн Singleton)
+// Синглтон для безопасного хэширования паролей: генерирует соль, хэширует пароль (SHA-256 + соль), поддерживает Base64-конвертацию
 object HashPassword {
     private const val HASH_ALGORITHM = "SHA-256"
 

@@ -7,6 +7,7 @@ import domain.entities.User
 import infrastructure.adapters.interfaces.ResourceRepository
 
 
+// Реализация контроля доступа: проверяет права пользователя на ресурс с учётом наследования от родительских путей
 class AccessControllerImpl(private val resourceRepository: ResourceRepository) : AccessController {
     override fun checkPermission(
         user: User,

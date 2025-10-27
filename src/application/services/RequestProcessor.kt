@@ -6,7 +6,7 @@ import infrastructure.adapters.interfaces.ResourceRepository
 import interfaces.VolumeValidator
 
 
-// Композит: process(request: AccessRequest): ExitCode (оркестрация: auth → find → access → volume)
+// Оркестратор: обрабатывает запрос, последовательно выполняя аутентификацию, проверку существования ресурса, контроль доступа и валидацию объёма
 class RequestProcessor(
     private val authService: AuthServiceImpl,
     private val accessController: AccessControllerImpl,

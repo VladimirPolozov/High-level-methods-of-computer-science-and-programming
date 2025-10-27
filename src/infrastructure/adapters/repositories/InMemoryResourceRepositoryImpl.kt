@@ -4,7 +4,7 @@ import domain.entities.Resource
 import infrastructure.adapters.interfaces.ResourceRepository
 
 
-// Implements IResourceRepository: root Resource, buildTree (parent-ссылки, из CreateResources.kt)
+// In-memory репозиторий ресурсов: хранит все ресурсы в мапе по полному пути (без дерева и parent-ссылок)
 object InMemoryResourceRepositoryImpl : ResourceRepository {
 
     private val resources: Map<String, Resource> = buildResourceMap()

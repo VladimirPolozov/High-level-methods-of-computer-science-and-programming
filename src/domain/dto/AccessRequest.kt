@@ -3,7 +3,7 @@ package domain.dto
 import domain.entities.Action
 
 
-// Data class: login, password, path, action: Action, volume: Int
+// DTO для входного запроса: содержит логин, пароль, путь к ресурсу, действие и объём
 data class AccessRequest (
     val login: String,
     val password: String,

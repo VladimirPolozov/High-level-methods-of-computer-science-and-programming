@@ -1,6 +1,7 @@
 package domain.entities
 
 
+// Data class пользователя: хранит логин, хэш пароля, соль и права доступа к ресурсам (в виде путей => действия)
 data class User(
     val login: String,
     val passwordHash: ByteArray,

@@ -5,7 +5,7 @@ import domain.enums.ExitCode
 import interfaces.VolumeValidator
 
 
-// Implements VolumeValidator: volume <= maxVolume && >=0
+// Реализует проверку объёма: разрешает, только если 0 ≤ volume ≤ maxVolume ресурса
 class VolumeValidatorImpl : VolumeValidator {
     override fun validate(volume: Int, resource: Resource): ExitCode {
         if (volume < 0) return ExitCode.INVALID_FORMAT

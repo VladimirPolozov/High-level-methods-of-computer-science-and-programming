@@ -1,7 +1,7 @@
 package domain.entities
 
 
-// Enum: READ, WRITE, EXECUTE (права доступа)
+// Перечисление прав доступа: READ, WRITE, EXECUTE; содержит метод для безопасного парсинга из строки
 enum class Action {
     READ, WRITE, EXECUTE;
 
