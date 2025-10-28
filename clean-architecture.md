@@ -38,44 +38,40 @@
 ```
 project-root/
 ├── src/
-│   └── main/
-│       └── kotlin/
-│           └── com/
-│               └── example/
-│                   ├── domain/                                       # Внутренний слой: Entities (независимые данные)
-│                   │   ├── entities/                                 # Data classes для домена
-│                   │   │   ├── User.kt                               # Data class: логин, хэш/соль (ByteArray), permissions (Map<String, Set<Action>>)
-│                   │   │   ├── Resource.kt                           # Data class: name, maxVolume, permissions (Set<Action>?), parent: Resource?
-│                   │   │   └── Action.kt                             # Enum: READ, WRITE, EXECUTE (права доступа)
-│                   │   ├── enums/                                    # Бизнес-константы
-│                   │   │   └── ExitCode.kt                           # Enum: SUCCESS(0), UNAUTHORIZED(2), FORBIDDEN(3), etc. (коды выхода)
-│                   │   ├── dto/                                      # DTO для передачи данных (граница слоёв)
-│                   │   │   └── AccessRequest.kt                      # Data class: login, password, path, action: Action, volume: Int
-|                   ├── interfaces/                                   # Здесь интерфейсы сервисов
-|                   |    ├── AuthService.kt                           # Интерфейс: authenticate(login, password): User? (аутентификация)
-│                   │    ├── AccessController.kt                      # Интерфейс: checkPermission(user, resource, action): ExitCode (права + наследование)
-│                   │    └── VolumeValidator.kt                       # Интерфейс: validate(volume, resource): ExitCode (лимит объёма)
-│                   ├── application/                                  # Application Layer: Use Cases (бизнес-логика, оркестрация)
-│                   │    └── services/                                # Сервисы
-│                   │       ├── AuthService.kt                        # Implements AuthService: хэширование SHA-256 + соль, возврат User или null
-│                   │       ├── AccessController.kt                   # Implements AccessController: навигация по parent, сбор inherited permissions
-│                   │       ├── VolumeValidator.kt                    # Implements VolumeValidator: volume <= maxVolume && >=0
-│                   │       └── RequestProcessor.kt                   # Композит: process(request: AccessRequest): ExitCode (оркестрация: auth → find → access → volume)
-│                   ├── infrastructure/                               # Interface Adapters: Адаптеры (репозитории, парсеры)
-│                   │   ├── adapters/                                 # Конкретные реализации интерфейсов
-│                   │   │   ├── interfaces/                           # интерфейс репозиториев
-│                   │   │   │   ├── UserRepository.kt                 # Интерфейс: findByLogin(login): User? (абстракция хранения пользователей)
-│                   │   │   │   └── ResourceRepository.kt             # Интерфейс: findByPath(path): Resource? (поиск по иерархии)
-│                   │   │   ├── repositories/                         # In-memory хранилища (хардкод)
-│                   │   │   │   ├── InMemoryUserRepository.kt         # Implements IUserRepository: listOf<User> (из CreateUsers.kt, с хэшами)
-│                   │   │   │   └── InMemoryResourceRepository.kt     # Implements IResourceRepository: root Resource, buildTree (parent-ссылки, из CreateResources.kt)
-│                   │   │   └── AppArgsParser.kt                      # parse(args: Array<String>): AccessRequest? (kotlinx-cli: флаги, справка на -h/invalid)
-│                   │   └── HashPassword.kt                           # хэширует пароль пользователя (работает как паттерн Singltone);
-│                   └── main/                                         # Frameworks & Drivers: Точка входа, инфраструктура
-│                       ├── Main.kt                                   # Entry point: парсинг → фабрика → process → exitProcess(code)
-|                       ├── ExitCodeProcessor.kt                      # обрабатывает исключения и возвращает код завершение программы;
-│                       └── components/                               # Фабрики для DI (простая инъекция)
-│                           └── AppComponents.kt                      # Object: createDefault(): RequestProcessor (создаёт InMemory* + use cases)
+│   ├── domain/                                       # Внутренний слой: Entities (независимые данные)
+│   │   ├── entities/                                 # Data classes для домена
+│   │   │   ├── User.kt                               # Data class: логин, хэш/соль (ByteArray), permissions (Map<String, Set<Action>>)
+│   │   │   ├── Resource.kt                           # Data class: name, maxVolume, permissions (Set<Action>?), parent: Resource?
+│   │   │   └── Action.kt                             # Enum: READ, WRITE, EXECUTE (права доступа)
+│   │   ├── enums/                                    # Бизнес-константы
+│   │   │   └── ExitCode.kt                           # Enum: SUCCESS(0), UNAUTHORIZED(2), FORBIDDEN(3), etc. (коды выхода)
+│   │   ├── dto/                                      # DTO для передачи данных (граница слоёв)
+│   │   │   └── AccessRequest.kt                      # Data class: login, password, path, action: Action, volume: Int
+│   ├── interfaces/                                   # Здесь интерфейсы сервисов
+│   │    ├── AuthService.kt                           # Интерфейс: authenticate(login, password): User? (аутентификация)
+│   │    ├── AccessController.kt                      # Интерфейс: checkPermission(user, resource, action): ExitCode (права + наследование)
+│   │    └── VolumeValidator.kt                       # Интерфейс: validate(volume, resource): ExitCode (лимит объёма)
+│   ├── application/                                  # Application Layer: Use Cases (бизнес-логика, оркестрация)
+│   │    └── services/                                # Сервисы
+│   │       ├── AuthService.kt                        # Implements AuthService: хэширование SHA-256 + соль, возврат User или null
+│   │       ├── AccessController.kt                   # Implements AccessController: навигация по parent, сбор inherited permissions
+│   │       ├── VolumeValidator.kt                    # Implements VolumeValidator: volume <= maxVolume && >=0
+│   │       └── RequestProcessor.kt                   # Композит: process(request: AccessRequest): ExitCode (оркестрация: auth → find → access → volume)
+│   ├── infrastructure/                               # Interface Adapters: Адаптеры (репозитории, парсеры)
+│   │   ├── adapters/                                 # Конкретные реализации интерфейсов
+│   │   │   ├── interfaces/                           # интерфейс репозиториев
+│   │   │   │   ├── UserRepository.kt                 # Интерфейс: findByLogin(login): User? (абстракция хранения пользователей)
+│   │   │   │   └── ResourceRepository.kt             # Интерфейс: findByPath(path): Resource? (поиск по иерархии)
+│   │   │   ├── repositories/                         # In-memory хранилища (хардкод)
+│   │   │   │   ├── InMemoryUserRepository.kt         # Implements IUserRepository: listOf<User>
+│   │   │   │   └── InMemoryResourceRepository.kt     # Implements IResourceRepository: root Resource, buildTree (parent-ссылки)
+│   │   │   └── AppArgsParser.kt                      # parse(args: Array<String>): AccessRequest? (kotlinx-cli: флаги, справка на -h/invalid)
+│   │   └── HashPassword.kt                           # хэширует пароль пользователя (работает как паттерн Singltone);
+│   └── app/                                          # Frameworks & Drivers: Точка входа, инфраструктура
+│       ├── Main.kt                                   # Entry point: парсинг → фабрика → process → exitProcess(code)
+│       ├── ExitCodeProcessor.kt                      # обрабатывает исключения и возвращает код завершение программы;
+│       └── components/                               # Фабрики для DI (простая инъекция)
+│           └── AppComponents.kt                      # Object: createDefault(): RequestProcessor (создаёт InMemory* + use cases)
 └── (root files: скрипты, docs)
     ├── build.sh                                                      # Сборка: kotlinc -include-runtime -d app.jar src/main/kotlin/**/*.kt
     ├── run.sh                                                        # Запуск: java -jar app.jar "$@"

@@ -1,1 +1,0 @@
-// Implements AuthService: хэширование SHA-256 + соль, возврат User или null

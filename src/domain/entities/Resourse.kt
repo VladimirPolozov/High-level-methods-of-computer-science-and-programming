@@ -1,7 +1,8 @@
-package resources
+package domain.entities
 
+
+// Data class ресурса: содержит имя, максимальный объём
 data class Resource(
     val name: String,
-    val maxVolume: Int,
-    val parent: Recource?,
+    val maxVolume: Int
 )
