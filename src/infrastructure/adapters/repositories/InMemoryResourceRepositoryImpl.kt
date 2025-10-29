@@ -15,7 +15,6 @@ object InMemoryResourceRepositoryImpl : ResourceRepository {
 
     private fun buildResourceMap(): Map<String, Resource> {
         return mapOf(
-            // Пример из ТЗ
             "A" to Resource(name = "A", maxVolume = 100),
             "A.A8B" to Resource(name = "A8B", maxVolume = 50),
             "A.A8B.C" to Resource(name = "C", maxVolume = 30),
