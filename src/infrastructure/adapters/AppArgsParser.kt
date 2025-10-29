@@ -12,20 +12,32 @@ object AppArgsParser {
     fun parse(args: Array<String>): AccessRequest? {
         val parser = ArgParser("resource-access")
 
-        val login by parser.option(ArgType.String, description = "User login").required()
-        val password by parser.option(ArgType.String, description = "User password").required()
-        val action by parser.option(ArgType.String, description = "Action: read/write/execute").required()
-        val resource by parser.option(ArgType.String, description = "Resource path").required()
-        val volume by parser.option(ArgType.Int, description = "Requested volume").required()
-        val help by parser.option(ArgType.Boolean, shortName = "h", fullName = "help", description = "Show help")
+        val login by parser.option(fullName = "login", shortName="l",
+            type = ArgType.String, description = "User login"
+        ).required()
+
+        val password by parser.option( fullName = "password", shortName = "p",
+            type = ArgType.String, description = "User password"
+        ).required()
+
+        val action by parser.option(fullName = "action", shortName = "a",
+            type = ArgType.String, description = "Action: read/write/execute"
+        ).required()
+
+        val resource by parser.option(fullName = "resource", shortName = "r",
+            type = ArgType.String, description = "Resource path"
+        ).required()
+
+        val volume by parser.option(fullName = "volume", shortName = "v",
+            type = ArgType.Int, description = "Requested volume"
+        ).required()
 
         return try {
             parser.parse(args)
-            if (help == true) null
-            else {
-                val act = Action.fromString(action) ?: return null
-                AccessRequest(login, password, resource, act, volume)
-            }
+
+            val act = Action.fromString(action) ?: return null
+            AccessRequest(login, password, resource, act, volume)
+
         } catch (e: Exception) {
             null
         }
