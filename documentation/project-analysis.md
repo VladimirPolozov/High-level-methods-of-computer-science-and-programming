@@ -48,7 +48,7 @@
 
 ## SOLID
 Обзор текущей структуры:
-- [Main.kt](src/Main.kt) — точка входа; парсинг аргументов; последовательная валидация; вызовы логики.
+- [Main.kt](../src/Main.kt) — точка входа; парсинг аргументов; последовательная валидация; вызовы логики.
 - [User.kt](src/user/User.kt) — класс User (login, passwordHash, salt, методы хэширования и проверки пароля, проверка прав).
 - [CreateUsers.kt](src/user/CreateUsers.kt) — здесь создаем список заранее заданных пользователей users.
 - [Resourse.kt](src/resources/Resourse.kt) — data class Resource + findResource() 
