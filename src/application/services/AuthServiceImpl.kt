@@ -7,7 +7,7 @@ import interfaces.AuthService
 
 
 // Реализует аутентификацию: проверяет логин и пароль через хэш SHA-256 с солью, возвращает пользователя или null
-class AuthServiceImpl(private val userRepository: UserRepository) : AuthService {
+open class AuthServiceImpl(private val userRepository: UserRepository) : AuthService {
 
     override fun authenticate(login: String, password: String): User? {
         val user = userRepository.findByLogin(login) ?: return null

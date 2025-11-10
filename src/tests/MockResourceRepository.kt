@@ -1,3 +1,5 @@
+package tests
+
 import domain.entities.Resource
 import infrastructure.adapters.interfaces.ResourceRepository
 

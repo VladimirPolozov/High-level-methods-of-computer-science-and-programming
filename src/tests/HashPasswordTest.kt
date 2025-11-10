@@ -1,9 +1,9 @@
+package tests
+
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertContentEquals
-import org.junit.jupiter.api.assertEquals
-import org.junit.jupiter.api.assertNotEquals
-import java.nio.charset.StandardCharsets
+import org.junit.jupiter.api.Assertions.assertEquals
 import infrastructure.HashPassword
+import org.junit.jupiter.api.Assertions.assertNotEquals
 
 class HashPasswordTest {
 
@@ -28,7 +28,7 @@ class HashPasswordTest {
         val hash1 = HashPassword.hash(password, salt)
         val hash2 = HashPassword.hash(password, salt)
 
-        assertContentEquals(hash1, hash2, "Хэш должен быть детерминированным")
+        assertEquals(hash1, hash2, "Хэш должен быть детерминированным")
     }
 
     @Test

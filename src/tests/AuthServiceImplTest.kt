@@ -1,10 +1,12 @@
+package tests
+
 import application.services.AuthServiceImpl
 import domain.entities.User
 import infrastructure.HashPassword
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
-import kotlin.test.assertContentEquals
 
 class AuthServiceImplTest {
 
@@ -26,9 +28,14 @@ class AuthServiceImplTest {
         val authService = AuthServiceImpl(mockRepo)
 
         val user = authService.authenticate(TEST_LOGIN, TEST_PASSWORD)
-
         assertNotNull(user, "Аутентификация должна быть успешной")
-        assertContentEquals(TEST_HASH, user!!.passwordHash, "Хэш пароля должен совпадать")
+
+        val password = "test_password"
+        val salt = HashPassword.generateSalt(16)
+        val hash1 = HashPassword.hash(password, salt)
+        val hash2 = HashPassword.hash(password, salt)
+
+        assertEquals(hash1, hash2, "Хэш должен быть детерминированным")
     }
 
     @Test

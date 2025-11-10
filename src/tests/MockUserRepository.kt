@@ -1,3 +1,5 @@
+package tests
+
 import domain.entities.User
 import infrastructure.adapters.interfaces.UserRepository
 
@@ -8,7 +10,7 @@ class MockUserRepository(
     var findByLoginCallCount = 0
 
     override fun findByLogin(login: String): User? {
-        findByLoginCallCount++
+        ++findByLoginCallCount
         return if (login == expectedLogin) expectedUser else null
     }
 }

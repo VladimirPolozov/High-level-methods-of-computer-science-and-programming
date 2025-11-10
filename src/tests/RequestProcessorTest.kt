@@ -1,8 +1,15 @@
+package tests
+
 import application.services.AuthServiceImpl
 import application.services.AccessControllerImpl
+import application.services.RequestProcessor
+import domain.dto.AccessRequest
+import domain.entities.Action
 import domain.entities.User
 import domain.enums.ExitCode
 import domain.entities.Resource
+import infrastructure.adapters.interfaces.ResourceRepository
+import interfaces.VolumeValidator
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 
