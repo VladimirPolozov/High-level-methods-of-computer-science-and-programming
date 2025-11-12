@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 success=0
 total=10
@@ -9,7 +10,7 @@ run_test() {
   shift 2
   ./run.sh "$@"
   code=$?
-  if [ $code -eq $expected ]; then
+  if [ $code -eq "$expected" ]; then
     echo "[$description] OK"
     success=$((success+1))
   else

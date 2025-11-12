@@ -53,7 +53,7 @@
 - [CreateUsers.kt](src/user/CreateUsers.kt) — здесь создаем список заранее заданных пользователей users.
 - [Resourse.kt](src/resources/Resourse.kt) — data class Resource + findResource() 
 - [CreateResources.kt](src/resources/CreateResources.kt) — val root = Resource() — жестко зашитое дерево ресурсов.
-- `src/...` — скрипты `build.sh`, `run.sh`, `test.sh` (инфраструктура).
+- `src/...` — скрипты `build.sh`, `run.sh`, `tests.sh` (инфраструктура).
 
 Нарушения SOLID:
 

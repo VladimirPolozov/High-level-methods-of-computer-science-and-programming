@@ -75,7 +75,7 @@ project-root/
 └── (root files: скрипты, docs)
     ├── build.sh                                                      # Сборка: kotlinc -include-runtime -d app.jar src/main/kotlin/**/*.kt
     ├── run.sh                                                        # Запуск: java -jar app.jar "$@"
-    ├── test.sh                                                       # Тесты: 10+ кейсов (args → run.sh → check $? → OK/FAIL, summary X/10)
+    ├── tests.sh                                                       # Тесты: 10+ кейсов (args → run.sh → check $? → OK/FAIL, summary X/10)
     ├── README.md                                                     # Docs: Авторы, инструкции сборки/запуска, описание архитектуры/слоёв
     ├── .gitignore                                                    # *.class, app.jar, target/, *.swp
 ```

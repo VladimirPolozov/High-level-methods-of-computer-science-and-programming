@@ -41,9 +41,9 @@ class MockResourceRepositoryForProcessor(
 
 class RequestProcessorTest {
 
-    private val VALID_USER = User("test", ByteArray(0), ByteArray(0), emptyMap())
+    private val VALID_USER = User("tests", ByteArray(0), ByteArray(0), emptyMap())
     private val VALID_RESOURCE = Resource("test.resource", 100)
-    private val VALID_REQUEST = AccessRequest("test", "pass", "test.resource", Action.READ, 50)
+    private val VALID_REQUEST = AccessRequest("tests", "pass", "test.resource", Action.READ, 50)
 
     @Test
     fun shouldReturnSuccessCodeOnFullValidRequest() {

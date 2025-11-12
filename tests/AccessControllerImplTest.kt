@@ -14,7 +14,7 @@ class AccessControllerImplTest {
     private val ROOT_RESOURCE_PATH = "A"
 
     private val TEST_USER = User(
-        login = "test",
+        login = "tests",
         passwordHash = ByteArray(0),
         salt = ByteArray(0),
         permissions = mapOf(
