@@ -11,5 +11,7 @@ enum class ExitCode(val code: Int) {
     FORBIDDEN(5),
     NOT_FOUND(6),
     INVALID_FORMAT(7),
-    EXCEED_MAX_VOLUME(8)
+    EXCEED_MAX_VOLUME(8),
+    DB_CONNECTION_ERROR(9),
+    SQL_ERROR(10),
 }

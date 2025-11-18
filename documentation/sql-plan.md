@@ -42,7 +42,7 @@ string salt
 а вот [InMemoryResourceRepositoryImpl.kt](../src/infrastructure/adapters/repositories/InMemoryResourceRepositoryImpl.kt)
 и [InMemoryUserRepositoryImpl.kt](../src/infrastructure/adapters/repositories/InMemoryUserRepositoryImpl.kt) 
 будут заменены, также в проект добавятся sql скрипты для создания и заполнения, файл
-DatabaseManager.kt для подключения к базе. Также обновим enum класс с ошибками.
+di.DatabaseManager.kt для подключения к базе. Также обновим enum класс с ошибками.
 
 Драйвер:
 Используется H2 (встроенный файловый движок). Подключение через JDBC.

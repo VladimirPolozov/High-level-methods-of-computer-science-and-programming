@@ -12,7 +12,19 @@ fun main(args: Array<String>) {
         ExitCodeProcessor.finish(ExitCode.HELP)
     }
 
-    val processor = AppComponents.createDefault()
-    val code = processor.process(request!!)
+    val processor = try {
+        AppComponents.createDefault()
+    } catch (e: Exception) {
+        System.err.println("Failed to initialize application: ${e.message}")
+        ExitCodeProcessor.finish(ExitCode.DB_CONNECTION_ERROR)
+    }
+
+    val code = try {
+        processor.process(request!!)
+    } catch (e: Exception) {
+        System.err.println("SQL error occurred: ${e.message}")
+        ExitCodeProcessor.finish(ExitCode.SQL_ERROR)
+    }
+
     ExitCodeProcessor.finish(code)
 }
