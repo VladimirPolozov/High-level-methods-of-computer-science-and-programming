@@ -23,10 +23,11 @@ import java.sql.SQLException
 // Фабрика компонентов: собирает и возвращает готовый RequestProcessor с in-memory репозиториями и сервисами
 
 object AppComponents {
-    private val connection = DatabaseManager.connect()
+    private val connection = DatabaseManager.connect() // Предполагается, что DatabaseManager возвращает Connection
     private val logger = LoggerFactory.getLogger("DB_INIT")
 
     fun createDefault(): RequestProcessor {
+        // Выполняем создание таблиц и вставку данных
         initDatabase(connection)
         initDefaultData(connection)
 
@@ -42,32 +43,20 @@ object AppComponents {
 
 }
 
+private fun readSqlFile(fileName: String): String {
+    val filePath = "/db/$fileName"
+    val inputStream = AppComponents::class.java.getResourceAsStream(filePath)
+        ?: throw IllegalArgumentException("SQL файл не найден в Classpath: $filePath")
+
+    return inputStream.bufferedReader().use { it.readText() }
+}
+
+
 fun initDatabase(connection: Connection) {
     val logger = LoggerFactory.getLogger("DB_INIT")
-    logger.info("Начало создания структуры БД (встроенный SQL).")
+    logger.info("Начало создания структуры БД из файла init.sql")
 
-    val schemaSql = """
-        CREATE TABLE IF NOT EXISTS users (
-            login VARCHAR(255) PRIMARY KEY,
-            password_hash BLOB NOT NULL,
-            salt BLOB NOT NULL
-        );
-
-        CREATE TABLE IF NOT EXISTS resources (
-            path VARCHAR(255) PRIMARY KEY,
-            name VARCHAR(255) NOT NULL,
-            max_volume INT NOT NULL
-        );
-
-        CREATE TABLE IF NOT EXISTS permissions (
-            user_login VARCHAR(255),
-            resource_path VARCHAR(255),
-            action VARCHAR(10) NOT NULL,
-            PRIMARY KEY (user_login, resource_path, action),
-            FOREIGN KEY (user_login) REFERENCES users(login),
-            FOREIGN KEY (resource_path) REFERENCES resources(path)
-        );
-    """
+    val schemaSql = readSqlFile("init.sql")
 
     try {
         connection.createStatement().execute(schemaSql)
@@ -89,6 +78,7 @@ fun initDefaultData(connection: Connection) {
     )
 
     try {
+        // Логика вставки пользователей остается в Kotlin, так как здесь нужен цикл и хэширование.
         val checkStmt = connection.prepareStatement("SELECT COUNT(*) FROM users WHERE login = ?")
         val insertUserStmt = connection.prepareStatement(
             "INSERT INTO users (login, password_hash, salt) VALUES (?, ?, ?)"
@@ -112,22 +102,9 @@ fun initDefaultData(connection: Connection) {
         logger.error("Ошибка при вставке пользователей: ${e.message}")
     }
 
-    val dataSql = """
-        -- ИСПРАВЛЕНО: Использование MERGE INTO для предотвращения ошибок нарушения ключа в H2
-        MERGE INTO resources (path, name, max_volume) KEY(path) VALUES
-        ('A', 'A', 100),
-        ('A.B', 'B', 50),
-        ('A.B.C', 'C', 20),
-        ('A.B.C.f_d', 'f_d', 500),
-        ('X.Y', 'Y', 1000);
+    logger.info("Загрузка тестовых ресурсов и прав доступа из файла fill.sql.")
 
-        -- ИСПРАВЛЕНО: Использование MERGE INTO для предотвращения ошибок нарушения составного ключа в H2
-        MERGE INTO permissions (user_login, resource_path, action) KEY(user_login, resource_path, action) VALUES
-        ('alice', 'A.B', 'READ'),
-        ('bob', 'A.B', 'READ'),
-        ('alice', 'A.B.C.f_d', 'READ'),
-        ('admin', 'X.Y', 'EXECUTE');
-    """
+    val dataSql = readSqlFile("fill.sql")
 
     try {
         connection.createStatement().execute(dataSql)
