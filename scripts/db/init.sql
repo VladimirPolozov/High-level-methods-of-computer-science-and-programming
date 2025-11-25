@@ -1,16 +1,16 @@
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     login VARCHAR(255) PRIMARY KEY,
-    password_hash VARCHAR(255) NOT NULL,
-    salt VARCHAR(255) NOT NULL
+    password_hash BLOB NOT NULL,
+    salt BLOB NOT NULL
 );
 
-CREATE TABLE resources (
+CREATE TABLE IF NOT EXISTS resources (
     path VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     max_volume INT NOT NULL
 );
 
-CREATE TABLE permissions (
+CREATE TABLE IF NOT EXISTS permissions (
     user_login VARCHAR(255),
     resource_path VARCHAR(255),
     action VARCHAR(10) NOT NULL,
