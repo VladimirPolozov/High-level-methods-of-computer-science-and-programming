@@ -14,11 +14,13 @@ class UserRepositoryImpl(
         val stmt = connection.prepareStatement(sql)
         stmt.setString(1, login)
         val rs = stmt.executeQuery()
+
         if (rs.next()) {
             val userLogin = rs.getString("login")
-            val passwordHash = rs.getString("password_hash")
-            val salt = rs.getString("salt")
+            val passwordHash = rs.getBytes("password_hash")
+            val salt = rs.getBytes("salt")
             val permissions = loadPermissionsForUser(userLogin)
+
             return User(userLogin, passwordHash, salt, permissions)
         }
         return null
@@ -29,6 +31,7 @@ class UserRepositoryImpl(
         val stmt = connection.prepareStatement(sql)
         stmt.setString(1, login)
         val rs = stmt.executeQuery()
+
         val result = mutableMapOf<String, MutableSet<Action>>()
         while (rs.next()) {
             val path = rs.getString("resource_path")

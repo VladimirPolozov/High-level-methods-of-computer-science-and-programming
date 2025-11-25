@@ -20,7 +20,7 @@ fun main(args: Array<String>) {
     }
 
     val code = try {
-        processor.process(request!!)
+        processor.process(request)
     } catch (e: Exception) {
         System.err.println("SQL error occurred: ${e.message}")
         ExitCodeProcessor.finish(ExitCode.SQL_ERROR)
