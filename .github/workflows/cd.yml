@@ -1,0 +1,64 @@
+name: CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build fat-JAR
+        run: |
+          mkdir -p out
+          # Компилируем с зависимостями (fat-jar)
+          kotlinc $(find src -name "*.kt") \
+            -cp "lib/kotlinx-cli-jvm-0.3.6.jar;lib/kotlin-reflect-1.9.0.jar;lib/kotlin-stdlib.jar" \
+            -include-runtime \
+            -d "out/app.jar"
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/new:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/new:${{ github.sha }}
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.sha }}
+          release_name: Release ${{ github.sha }}
+          body: |
+            Docker image available at:
+            https://hub.docker.com/r/${{ secrets.DOCKERHUB_USERNAME }}/new/tags
+          draft: false
+          prerelease: false
+
+      - name: Notify Telegram on success
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" \
+            -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
+            -d "text=✅ Docker image built and pushed for ${{ github.repository }}%0ACommit: ${{ github.sha }}%0ATag: v${{ github.sha }}"
