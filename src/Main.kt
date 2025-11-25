@@ -1,58 +1,30 @@
-import kotlinx.cli.*
-import user.*
-import resources.*
-import kotlin.system.exitProcess
-import kotlin.KotlinVersion
+import app.ExitCodeProcessor
+import app.components.AppComponents
+import domain.enums.ExitCode
+import infrastructure.adapters.AppArgsParser
 
+
+// Точка входа: парсит аргументы, выводит справку при --help или ошибке, иначе обрабатывает запрос и завершает программу с нужным кодом.
 fun main(args: Array<String>) {
-    val parser = ArgParser("app")
+    val request = AppArgsParser.parse(args)
+    if (args.contains("-h") || args.contains("--help") || request == null) {
+        println("./run.sh --login <user> --password <pass> --action <read/write/execute> --resource <path> --volume <num>")
+        ExitCodeProcessor.finish(ExitCode.HELP)
+    }
 
-    val login by parser.option(ArgType.String, description = "User login")
-    val password by parser.option(ArgType.String, description = "User password")
-    val action by parser.option(ArgType.String, description = "Action: read, write, execute")
-    val resourcePath by parser.option(ArgType.String, description = "Resource path (A.B.C)")
-    val volume by parser.option(ArgType.Int, description = "Requested volume")
-    val help by parser.option(ArgType.Boolean, shortName = "h", description = "Show help")
-
-    try {
-        parser.parse(args)
-    } catch (e: HelpException) {
-        exitProcess(1)
-    } catch (e: ParseException) {
-        exitProcess(7)
+    val processor = try {
+        AppComponents.createDefault()
     } catch (e: Exception) {
-        exitProcess(7)
+        System.err.println("Failed to initialize application: ${e.message}")
+        ExitCodeProcessor.finish(ExitCode.DB_CONNECTION_ERROR)
     }
 
-    if (help == true) {
-        println("Справка по программе:")
-        println("--login <user>       Логин пользователя")
-        println("--password <pass>    Пароль пользователя")
-        println("--action <read/write/execute>   Действие")
-        println("--resource <path>    Путь до ресурса")
-        println("--volume <num>       Объём запрашиваемого ресурса")
-        exitProcess(1)
+    val code = try {
+        processor.process(request)
+    } catch (e: Exception) {
+        System.err.println("SQL error occurred: ${e.message}")
+        ExitCodeProcessor.finish(ExitCode.SQL_ERROR)
     }
 
-    val user = users.find { it.login == login } ?: exitProcess(3)
-
-    if (!user.checkPassword(password ?: "")) {
-        exitProcess(2)
-    }
-
-    val normAction = action?.lowercase() ?: exitProcess(4)
-    if (normAction !in listOf("read","write","execute")) exitProcess(4)
-
-    val resource = root.findResource(resourcePath ?: "")
-        ?: exitProcess(6)
-
-    if (!user.checkPermission(resourcePath ?: "", normAction)) {
-        exitProcess(5)
-    }
-
-    val reqVolume = volume ?: exitProcess(7)
-    if (reqVolume <= 0) exitProcess(7)
-    if (reqVolume > resource.maxVolume) exitProcess(8)
-
-    exitProcess(0)
+    ExitCodeProcessor.finish(code)
 }
