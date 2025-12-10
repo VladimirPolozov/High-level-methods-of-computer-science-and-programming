@@ -4,7 +4,8 @@ import java.sql.Connection
 import java.sql.DriverManager
 
 object DatabaseManager {
-    private const val DB_URL = "jdbc:h2:./db/data;AUTO_SERVER=TRUE"
+
+    private const val DB_URL = "jdbc:h2:file:./src/data/data;AUTO_SERVER=TRUE"
     private var connection: Connection? = null
 
     fun connect(): Connection {
