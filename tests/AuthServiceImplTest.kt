@@ -2,7 +2,7 @@ package tests
 
 import application.services.AuthServiceImpl
 import domain.entities.User
-import infrastructure.HashPassword
+import infrastructure.adapters.security.HashService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -12,8 +12,8 @@ class AuthServiceImplTest {
 
     private val TEST_LOGIN = "test_user"
     private val TEST_PASSWORD = "test_password"
-    private val TEST_SALT = HashPassword.generateSalt()
-    private val TEST_HASH = HashPassword.hash(TEST_PASSWORD, TEST_SALT)
+    private val TEST_SALT = HashService.generateSalt()
+    private val TEST_HASH = HashService.hash(TEST_PASSWORD, TEST_SALT)
 
     private val existingUser = User(
         login = TEST_LOGIN,
@@ -31,9 +31,9 @@ class AuthServiceImplTest {
         assertNotNull(user, "Аутентификация должна быть успешной")
 
         val password = "test_password"
-        val salt = HashPassword.generateSalt(16)
-        val hash1 = HashPassword.hash(password, salt)
-        val hash2 = HashPassword.hash(password, salt)
+        val salt = HashService.generateSalt(16)
+        val hash1 = HashService.hash(password, salt)
+        val hash2 = HashService.hash(password, salt)
 
         assertEquals(hash1, hash2, "Хэш должен быть детерминированным")
     }

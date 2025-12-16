@@ -3,7 +3,7 @@ set -e
 
 echo "=== RUN ==="
 
-bash "$(dirname "$0")/build.sh"
+#bash "$(dirname "$0")/build.sh"
 
 cd "$(dirname "$0")/.." || exit
 

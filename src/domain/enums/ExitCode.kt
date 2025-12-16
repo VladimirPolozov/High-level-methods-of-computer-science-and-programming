@@ -14,4 +14,5 @@ enum class ExitCode(val code: Int) {
     EXCEED_MAX_VOLUME(8),
     DB_CONNECTION_ERROR(9),
     SQL_ERROR(10),
+    OTHER_ERROR(12),
 }

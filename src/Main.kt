@@ -1,10 +1,10 @@
-import app.ExitCodeProcessor
-import app.components.AppComponents
+import kotlin.system.exitProcess
+import app.components.AppContainer
 import application.services.RequestProcessor
 import domain.enums.ExitCode
-import infrastructure.adapters.AppArgsParser
+import domain.exceptions.DbConnectionException
+import infrastructure.adapters.cli.AppArgsParser
 import org.slf4j.LoggerFactory
-import java.sql.SQLException
 
 // Точка входа: парсит аргументы, выводит справку при --help или ошибке, иначе обрабатывает запрос и завершает программу с нужным кодом.
 
@@ -14,8 +14,8 @@ fun finishWithCode(exitCode: ExitCode, message: String? = null) {
     if (message != null) {
         logger.info(message)
     }
-    logger.info("Program finished with code ${exitCode.name}")
-    ExitCodeProcessor.finish(exitCode)
+    logger.info("Program finished with code ${exitCode.name} (${exitCode.code})")
+    exitProcess(exitCode.code)
 }
 
 fun safeFinish(exitCode: ExitCode, errorMessage: String? = null) {
@@ -29,9 +29,12 @@ fun main(args: Array<String>) {
     try {
         runApplication(args)
     } catch (e: Exception) {
-        System.err.println("Unexpected error: ${e.message}")
+        System.err.println("CRITICAL UNEXPECTED ERROR: ${e.message}")
         e.printStackTrace()
-        finishWithCode(ExitCode.SQL_ERROR, "Unexpected error: ${e.message}")
+        safeFinish(
+            ExitCode.OTHER_ERROR,
+            "CRITICAL UNEXPECTED ERROR: Failed to run application. Details: ${e.message}"
+        )
     }
 }
 
@@ -53,10 +56,16 @@ fun runApplication(args: Array<String>) {
 
     val processor: RequestProcessor
     try {
-        processor = AppComponents.createDefault()
-    } catch (e: Exception) {
+        processor = AppContainer.createDefault()
+    } catch (e: DbConnectionException) {
         safeFinish(
             ExitCode.DB_CONNECTION_ERROR,
+            "Failed to initialize application (DB connection/config error): ${e.message}"
+        )
+        return
+    } catch (e: Exception) {
+        safeFinish(
+            ExitCode.OTHER_ERROR,
             "Failed to initialize application: ${e.message}"
         )
         return
@@ -64,10 +73,10 @@ fun runApplication(args: Array<String>) {
 
     val code = try {
         processor.process(request)
-    } catch (e: SQLException) {
+    } catch (e: DbConnectionException) {
         safeFinish(
-            ExitCode.SQL_ERROR,
-            "SQL error occurred: ${e.message}"
+            ExitCode.DB_CONNECTION_ERROR,
+            "Database error during request processing: ${e.message}"
         )
         return
     }

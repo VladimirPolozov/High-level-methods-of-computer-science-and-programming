@@ -1,81 +1,89 @@
 # Чистая архитектура
 ## Описание слоёв приложения
 ### Entities
-- `User` — data class с полями `login`, `passwordHash`, `salt` (без методов проверки, её выносим в use cases);
-- `Resource` — data class с полями `name`, `maxVolume`, `parent: Resource?`;
-- `Action` — `enum` (`READ`, `WRITE`, `EXECUTE`);
-- `Permission` — набор разрешённых Action для пользователя на ресурс;
-- `AccessRequest` — DTO с полями: `login, password, resourcePath, action, requestedVolume;
-- `ExitCode` — `enum` с кодами завершения.
+- `User` — data class с полями: login, passwordHash (ByteArray?), salt (ByteArray?). Не содержит логики.
+- `Resource` — data class с полями: path (полный путь), maxVolume.
+- `Action` — enum (READ, WRITE, EXECUTE).
+- `AccessRequest` — DTO с полями: login, password, resourcePath, action, requestedVolume.
+- `ExitCode` — enum с кодами завершения. Включает коды ошибок БД (9, 10).
 ### Services
-- `AuthService` проверяет логин/пароль (сравнивает хэш), возвращает результат (`ExitCode`);
-- `AccessController` проверяет права на ресурс по пути, учитывая запрпашиваемые действие (`Action`);
-- `VolumeValidationService` проверяет, доступен ли пользователю запрошенный объём (`maxVolume`);
-- `RequestProcessor` вызывает `AuthService`, `AccessController`, `VolumeValidationService`.
-### Repositories
-- `AppArgsParser` парсит аргументы CLI, возвращает `AccessRequest` или ошибку;
-- `UserRepository` (интерфейс) с реализацией в `InMemoryUserRepository` (хардкод из CreateUsers.kt);
-- аналогичный `ResourceRepository` (интерфейс) с реализацией в `InMemoryResourceRepository`.
-### Утилиты
-- `HashPassword` хэширует пароль пользователя (работает как паттерн Singltone);
-- `ExitCodeProcessor` обрабатывает исключения и возвращает код завершение программы;
-## План реструктуризации проекта
-### Entities
-- [ ] вынести data classes: `User` и `Resource`;
-- [ ] добавить `enum` `Action`;
-- [ ] добавить `enum` `ExitCode`;
-- [ ] добавить DTO: `AccessRequest`;
-- [ ] удалить логику из `User` и `Resource`.
-### Services
-- [ ] создать интерфейсы: `AuthService`, `ResourceRepository`, `AccessController`, `VolumeValidator`;
-- [ ] реализовать сервисы: `AuthService`, `AccessController`, `VolumeValidationService`, `RequestProcessor`;
-### Repositories
-- [ ] реализовать `InMemoryUserRepository`, `InMemoryResourceRepository`.
-### Дополнительные "утилиты"
-- [ ] реализовать хэширования
-- [ ] реализовать обработку исключений и возврат кодов приложений
+- `AuthService` — Интерфейс для аутентификации. AuthServiceImpl проверяет логин/пароль (сравнивает хэш), 
+использует UserRepository.
+- `AccessController` — Интерфейс для проверки прав. AccessControllerImpl проверяет права на ресурс по пути, 
+используя ResourceRepository и PermissionRepository.
+- `VolumeValidator` — Интерфейс для проверки объема. VolumeValidatorImpl проверяет, доступен ли запрошенный 
+объем.
+- `ActionAndPathValidator` — Интерфейс для проверки корректности формата пути и действия.
+- `RequestProcessor` — Оркестратор. Вызывает AuthService, ActionAndPathValidator, AccessController, VolumeValidator.
+### Repositories (Infrastructure Layer)
+Адаптеры, реализующие интерфейсы, определенные в Domain.
+- `UserRepository` — Интерфейс. Реализован как JdbcUserRepositoryImpl.
+- `ResourceRepository` — Интерфейс. Реализован как JdbcResourceRepositoryImpl.
+- `AppArgsParser` — Парсит аргументы CLI, возвращает AccessRequest или ошибку.
+###  Утилиты и Инфраструктура (Infrastructure/App Layer)
+- `HashService` — Хэширует пароль (SHA-256 + соль) и генерирует соль. Работает как синглтон.
+- `H2ConnectionProvider` — Управляет JDBC-подключением к базе H2.
+- `AppContainer` — Фабрика зависимостей (DI). Содержит логику инициализации паролей в БД (если salt = NULL).
 ### Планируемая структура проекта
 ```
 project-root/
 ├── src/
-│   ├── domain/                                       # Внутренний слой: Entities (независимые данные)
-│   │   ├── entities/                                 # Data classes для домена
-│   │   │   ├── User.kt                               # Data class: логин, хэш/соль (ByteArray), permissions (Map<String, Set<Action>>)
-│   │   │   ├── Resource.kt                           # Data class: name, maxVolume, permissions (Set<Action>?), parent: Resource?
-│   │   │   └── Action.kt                             # Enum: READ, WRITE, EXECUTE (права доступа)
-│   │   ├── enums/                                    # Бизнес-константы
-│   │   │   └── ExitCode.kt                           # Enum: SUCCESS(0), UNAUTHORIZED(2), FORBIDDEN(3), etc. (коды выхода)
-│   │   ├── dto/                                      # DTO для передачи данных (граница слоёв)
-│   │   │   └── AccessRequest.kt                      # Data class: login, password, path, action: Action, volume: Int
-│   ├── interfaces/                                   # Здесь интерфейсы сервисов
-│   │    ├── AuthService.kt                           # Интерфейс: authenticate(login, password): User? (аутентификация)
-│   │    ├── AccessController.kt                      # Интерфейс: checkPermission(user, resource, action): ExitCode (права + наследование)
-│   │    └── VolumeValidator.kt                       # Интерфейс: validate(volume, resource): ExitCode (лимит объёма)
-│   ├── application/                                  # Application Layer: Use Cases (бизнес-логика, оркестрация)
-│   │    └── services/                                # Сервисы
-│   │       ├── AuthService.kt                        # Implements AuthService: хэширование SHA-256 + соль, возврат User или null
-│   │       ├── AccessController.kt                   # Implements AccessController: навигация по parent, сбор inherited permissions
-│   │       ├── VolumeValidator.kt                    # Implements VolumeValidator: volume <= maxVolume && >=0
-│   │       └── RequestProcessor.kt                   # Композит: process(request: AccessRequest): ExitCode (оркестрация: auth → find → access → volume)
-│   ├── infrastructure/                               # Interface Adapters: Адаптеры (репозитории, парсеры)
-│   │   ├── adapters/                                 # Конкретные реализации интерфейсов
-│   │   │   ├── interfaces/                           # интерфейс репозиториев
-│   │   │   │   ├── UserRepository.kt                 # Интерфейс: findByLogin(login): User? (абстракция хранения пользователей)
-│   │   │   │   └── ResourceRepository.kt             # Интерфейс: findByPath(path): Resource? (поиск по иерархии)
-│   │   │   ├── repositories/                         # In-memory хранилища (хардкод)
-│   │   │   │   ├── InMemoryUserRepository.kt         # Implements IUserRepository: listOf<User>
-│   │   │   │   └── InMemoryResourceRepository.kt     # Implements IResourceRepository: root Resource, buildTree (parent-ссылки)
-│   │   │   └── AppArgsParser.kt                      # parse(args: Array<String>): AccessRequest? (kotlinx-cli: флаги, справка на -h/invalid)
-│   │   └── HashPassword.kt                           # хэширует пароль пользователя (работает как паттерн Singltone);
-│   └── app/                                          # Frameworks & Drivers: Точка входа, инфраструктура
-│       ├── Main.kt                                   # Entry point: парсинг → фабрика → process → exitProcess(code)
-│       ├── ExitCodeProcessor.kt                      # обрабатывает исключения и возвращает код завершение программы;
-│       └── components/                               # Фабрики для DI (простая инъекция)
-│           └── AppComponents.kt                      # Object: createDefault(): RequestProcessor (создаёт InMemory* + use cases)
+│   ├── domain/                                       # 1. ДОМЕН (Entities, DTO, Interfaces) - ЯДРО
+│   │   ├── entities/                                 # Сущности (User, Resource, Action)
+│   │   │   ├── Resourse.kt
+│   │   │   └── User.kt
+│   │   ├── enums/
+│   │   │   ├── Action.kt                             # Определяет разрешенные действия
+│   │   │   └── ExitCode.kt                           # Коды завершения программы
+│   │   ├── dto/
+│   │   │   └── AccessRequest.kt                      # Объект передачи данных, который инкапсулирует все аргументы командной строки для передачи в Application Layer.
+│   │   ├── exceptions/
+│   │   │   └── AuthException.kt                      # Исключение AuthException. Базовый класс для всех ошибок аутентификации
+│   │   ├── reopository/                              # ИНТЕРФЕЙСЫ РЕПОЗИТОРИЕВ (Порты, абстракции данных)
+│   │   │   ├── UserRepository.kt                     
+│   │   │   └── ResourceRepository.kt                 
+│   │   └── services/                                 # ИНТЕРФЕЙСЫ СЕРВИСОВ (Абстракции бизнес-логики)
+│   │       ├── AccessController.kt                   # Контракт для проверки прав доступа
+│   │       ├── ActionAndPathValidator.kt             # Контракт для проверки корректности введенных действия и пути ресурса
+│   │       ├── AuthService.kt                        # Контракт для аутентификации пользователя
+│   │       └── VolumeValidator.kt                    # Контракт для проверки лимита объема
+│   ├── application/                                  # 2. СЛОЙ ПРИЛОЖЕНИЯ 
+│   │    └── services/                                # Реализации бизнес-логики
+│   │       ├── AccessControllerImpl.kt                       
+│   │       ├── ActionAndPathValidatorImpl.kt     
+│   │       ├── AuthServiceImpl.kt  
+│   │       ├── RequestProcessor.kt                   (Оркестратор)
+│   │       └── VolumeValidatorImpl.kt                   
+│   ├── infrastructure/                               # 3. АДАПТЕРЫ И ИНФРАСТРУКТУРА
+│   │   ├── adapters/                                 
+│   │   │   ├── cli/                                  
+│   │   │   │   └── AppArgsParser.kt                  
+│   │   │   ├── db/                                   
+│   │   │   │   └── repositories/                     # Реализации репозиториев (JDBC)
+│   │   │   │       ├── JdbcUserRepositoryImpl.kt     
+│   │   │   │       └── JdbcResourceRepositoryImpl.kt 
+│   │   │   ├── mappers/                              # Маппинг ResultSet <-> Domain
+│   │   │   │   ├── UserMapper.kt                  
+│   │   │   │   └── ResourceMapper.kt
+│   │   │   ├── dto/                             
+│   │   │   │   └── JdbcUserDto.kt
+│   │   │   ├── security/                             
+│   │   │   │   └── HashService.kt                    # Синглтон для хэширования (SHA-256 + соль)
+│   │   └── db/                                       
+│   │       └── H2ConnectionProvider.kt               # Синглтон для JDBC подключения                      
+│   ├── app/                                          # 4. ВНЕШНИЕ ДРАЙВЕРЫ / ТОЧКА ВХОДА
+│   │   ├── ExitCodeProcessor.kt                      # Обработка исключений
+│   │   └── components/                               
+│   │       └── AppContainer.kt                       # Фабрика зависимостей), **включает логику инициализации паролей**
+│   └── Main.kt                                       # Точка входа, вызывает AppContainer
 └── (root files: скрипты, docs)
-    ├── build.sh                                                      # Сборка: kotlinc -include-runtime -d app.jar src/main/kotlin/**/*.kt
-    ├── run.sh                                                        # Запуск: java -jar app.jar "$@"
-    ├── tests.sh                                                       # Тесты: 10+ кейсов (args → run.sh → check $? → OK/FAIL, summary X/10)
-    ├── README.md                                                     # Docs: Авторы, инструкции сборки/запуска, описание архитектуры/слоёв
-    ├── .gitignore                                                    # *.class, app.jar, target/, *.swp
+    ├── scripts/
+    │   ├── init.sql                                  # DDL: CREATE TABLE (USERS, RESOURCES, PERMISSIONS)
+    │   ├── fill.sql                                  # DML: MERGE INTO (логины, ресурсы, права, **пароли=NULL**)
+    │   ├── init-db.sh                                # Запускает H2 RunScript для init.sql и fill.sql
+    │   ├── build.sh                                  
+    │   └── run.sh
+    ├── documentation/
+    └── lib/
+
 ```

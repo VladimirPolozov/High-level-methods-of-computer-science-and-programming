@@ -1,11 +1,13 @@
 package domain.entities
 
+import domain.enums.Action
+
 
 // Data class пользователя: хранит логин, хэш пароля, соль и права доступа к ресурсам (в виде путей => действия)
 data class User(
     val login: String,
-    val passwordHash: ByteArray,
-    val salt: ByteArray,
+    val passwordHash: ByteArray?,
+    val salt: ByteArray?,
     val permissions: Map<String, Set<Action>>
 ) {
     override fun equals(other: Any?): Boolean {

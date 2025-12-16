@@ -1,13 +1,10 @@
-package infrastructure.adapters
+package infrastructure.adapters.cli
 
 import domain.dto.AccessRequest
-import domain.entities.Action
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.required
 
-
-// Парсит аргументы командной строки через kotlinx-cli, возвращает AccessRequest или null (включая обработку --help и невалидных данных)
 object AppArgsParser {
     fun parse(args: Array<String>): AccessRequest? {
         val parser = ArgParser("resource-access")
@@ -35,11 +32,11 @@ object AppArgsParser {
         return try {
             parser.parse(args)
 
-            val act = Action.fromString(action) ?: return null
-            AccessRequest(login, password, resource, act, volume)
+            AccessRequest(login, password, resource, action, volume)
 
         } catch (e: Exception) {
-            null
+            System.err.println("Unexpected parsing error: ${e.message}")
+            return null
         }
     }
 }

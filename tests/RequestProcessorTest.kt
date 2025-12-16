@@ -4,7 +4,7 @@ import application.services.AuthServiceImpl
 import application.services.AccessControllerImpl
 import application.services.RequestProcessor
 import domain.dto.AccessRequest
-import domain.entities.Action
+import domain.enums.Action
 import domain.entities.User
 import domain.enums.ExitCode
 import domain.entities.Resource

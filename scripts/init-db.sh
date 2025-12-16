@@ -1,21 +1,22 @@
 #!/bin/bash
 set -e
 
-bash "$(dirname "$0")/build.sh"
+cd "$(dirname "$0")/.."
 
-cd "$(dirname "$0")/.." || exit
+H2_JAR="lib/h2-2.4.240.jar" # Проверьте путь к вашему jar-файлу H2
 
-DB_DIR="src/data"
-mkdir -p "$DB_DIR"
+mkdir -p "src/data"
 
-CLASSPATH="out/app.jar"
-CLASSPATH="${CLASSPATH};src/resources/"
-CLASSPATH="${CLASSPATH};lib/kotlinx-cli-jvm-0.3.6.jar"
-CLASSPATH="${CLASSPATH};lib/kotlin-reflect-1.9.0.jar"
-CLASSPATH="${CLASSPATH};lib/kotlin-stdlib.jar"
-CLASSPATH="${CLASSPATH};lib/slf4j-api-2.0.9.jar"
-CLASSPATH="${CLASSPATH};lib/slf4j-simple-2.0.17.jar"
-CLASSPATH="${CLASSPATH};lib/h2-2.4.240.jar"
-CLASSPATH="${CLASSPATH};lib/sqlite-jdbc-3.43.2.0.jar"
+DB_URL="jdbc:h2:./src/data/app-db"
 
-java -cp "$CLASSPATH" MainKt "$@"
+echo "Инициализация схемы базы данных..."
+java -cp "$H2_JAR" org.h2.tools.RunScript \
+  -url "$DB_URL" \
+  -script "scripts/init.sql"
+
+echo "Заполнение тестовыми данными (fill.sql)..."
+java -cp "$H2_JAR" org.h2.tools.RunScript \
+  -url "$DB_URL" \
+  -script "scripts/fill.sql"
+
+echo "База данных успешно инициализирована: src/data/app-db.mv.db"
