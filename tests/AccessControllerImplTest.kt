@@ -1,7 +1,7 @@
 package tests
 
 import application.services.AccessControllerImpl
-import domain.entities.Action
+import domain.enums.Action
 import domain.entities.User
 import domain.enums.ExitCode
 import org.junit.jupiter.api.Test

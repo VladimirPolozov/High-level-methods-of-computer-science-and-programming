@@ -1,33 +1,43 @@
 package application.services
 
 import domain.entities.User
-import domain.enums.ExitCode
-import infrastructure.HashPassword
-import infrastructure.adapters.interfaces.UserRepository
-import interfaces.AuthService
+import domain.exceptions.InvalidLoginException
+import domain.exceptions.InvalidPasswordException
+import domain.repository.UserRepository
+import domain.services.AuthService
+import infrastructure.adapters.security.HashService
 import org.slf4j.LoggerFactory
-import java.util.*
 
+open class AuthServiceImpl(
+    private val userRepo: UserRepository,
+    private val hashService: HashService
+) : AuthService {
 
-// Реализует аутентификацию: проверяет логин и пароль через хэш SHA-256 с солью, возвращает пользователя или null
-open class AuthServiceImpl(private val userRepo: UserRepository) : AuthService {
-    private val logger = LoggerFactory.getLogger("AUTH_SERVICE")
+    private val logger = LoggerFactory.getLogger("AuthService")
 
     override fun authenticate(login: String, password: String): User {
-        logger.info("АУТЕНТИКАЦИЯ: Полученный пароль для пользователя '$login': $password")
 
         val user = userRepo.findByLogin(login)
-
         if (user == null) {
-            logger.error("Ошибка аутентификации: Пользователь '$login' не найден.")
-            throw RuntimeException("INVALID_LOGIN(${ExitCode.INVALID_LOGIN.code})")
+            logger.error("Authentication error: User '$login' was not found.")
+            throw InvalidLoginException()
         }
 
-        logger.info("АУТЕНТИКАЦИЯ: Хэш из БД (Base64): ${Base64.getEncoder().encodeToString(user.passwordHash)}")
-        logger.info("АУТЕНТИКАЦИЯ: Соль из БД (Base64): ${Base64.getEncoder().encodeToString(user.salt)}")
+        val salt = user.salt
+        val passwordHash = user.passwordHash
 
+        if (salt == null || passwordHash == null) {
+            logger.error("Authentication error: Password/salt not initialized for user '$login'.")
+            throw InvalidPasswordException()
+        }
 
-        logger.info("Аутентификация для пользователя '$login' успешна.")
+        val hashedPassword = hashService.hash(password, salt)
+        if (!user.passwordHash.contentEquals(hashedPassword)) {
+            logger.error("Authentication error: Invalid password for user '$login'.")
+            throw InvalidPasswordException()
+        }
+
+        logger.info("Authentication for the user '$login' is successful.")
         return user
     }
 }

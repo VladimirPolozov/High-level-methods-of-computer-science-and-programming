@@ -3,6 +3,6 @@ package domain.entities
 
 // Data class ресурса: содержит имя, максимальный объём
 data class Resource(
-    val name: String,
+    val path: String,
     val maxVolume: Int
 )

@@ -1,4 +1,4 @@
-package domain.entities
+package domain.enums
 
 
 // Перечисление прав доступа: READ, WRITE, EXECUTE; содержит метод для безопасного парсинга из строки

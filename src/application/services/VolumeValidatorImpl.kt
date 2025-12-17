@@ -2,7 +2,7 @@ package application.services
 
 import domain.entities.Resource
 import domain.enums.ExitCode
-import interfaces.VolumeValidator
+import domain.services.VolumeValidator
 
 
 // Реализует проверку объёма: разрешает, только если 0 ≤ volume ≤ maxVolume ресурса

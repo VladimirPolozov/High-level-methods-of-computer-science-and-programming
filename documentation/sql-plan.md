@@ -5,7 +5,6 @@
 - salt
 2. Ресурсы (resources):
 - path (PK) — полный путь
-- name
 - max_volume
 3. Права доступа (permissions):
 - user_login (FK)
@@ -15,34 +14,33 @@
 ER-Диаграмма:
 
 erDiagram
-USERS {
-string login PK
-string password_hash
-string salt
-}
+    USERS {
+        string login PK "Логин пользователя"
+        byte password_hash "Хэш пароля"
+        byte salt "Соль"
+    }
 
     RESOURCES {
-        string path PK
-        string name
-        int max_volume
+        string path PK "Путь ресурса"
+        int max_volume "Максимальный объем"
     }
 
     PERMISSIONS {
-        string user_login FK
-        string resource_path FK
-        string action
+        string user_login FK "Логин пользователя"
+        string resource_path FK "Путь ресурса"
+        string action "Действие"
     }
 
-    USERS ||--o{ PERMISSIONS : has
-    RESOURCES ||--o{ PERMISSIONS : grants
+    USERS ||--o{ PERMISSIONS : HAS
+    RESOURCES ||--o{ PERMISSIONS : GRANTS
 
 
 Описание:
 Интерфейсы ResourceRepository и ResourceRepository остаются, 
-а вот [InMemoryResourceRepositoryImpl.kt](../src/infrastructure/adapters/repositories/InMemoryResourceRepositoryImpl.kt)
-и [InMemoryUserRepositoryImpl.kt](../src/infrastructure/adapters/repositories/InMemoryUserRepositoryImpl.kt) 
+а вот [InMemoryResourceRepositoryImpl.kt](../src/infrastructure/adapters/db/repositories/InMemoryResourceRepositoryImpl.kt)
+и [InMemoryUserRepositoryImpl.kt](../src/infrastructure/adapters/db/repositories/InMemoryUserRepositoryImpl.kt) 
 будут заменены, также в проект добавятся sql скрипты для создания и заполнения, файл
-di.DatabaseManager.kt для подключения к базе. Также обновим enum класс с ошибками.
+H2ConnectionProvider.kt для подключения к базе. Также обновим enum класс с ошибками.
 
 Драйвер:
 Используется H2 (встроенный файловый движок). Подключение через JDBC.
