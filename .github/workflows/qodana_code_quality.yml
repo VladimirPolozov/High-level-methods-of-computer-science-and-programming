@@ -20,7 +20,8 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
       - name: Build
-        run: mkdir -p out && kotlinc $(find src -name "*.kt") -include-runtime -d out/app.jar
+        run: chmod +x scripts/build.sh
+             scripts/build.sh
       - name: Run integration tests
         run: chmod +x test.sh && ./test.sh
       - name: 'Qodana Scan'
