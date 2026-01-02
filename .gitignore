@@ -4,3 +4,4 @@
 app.jar
 /kotlinc/
 /src/META-INF/
+/logs/

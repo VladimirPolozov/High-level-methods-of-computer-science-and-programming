@@ -1,0 +1,86 @@
+package main.kotlin.application.services
+
+import main.kotlin.domain.dto.AccessRequest
+import main.kotlin.domain.entities.User
+import main.kotlin.domain.enums.Action
+import main.kotlin.domain.enums.ExitCode
+import main.kotlin.domain.exceptions.InvalidLoginException
+import main.kotlin.domain.exceptions.InvalidPasswordException
+import main.kotlin.domain.repository.ResourceRepository
+
+import org.slf4j.LoggerFactory
+import main.kotlin.domain.services.AccessController
+import main.kotlin.domain.services.ActionAndPathValidator
+import main.kotlin.domain.services.AuthService
+import main.kotlin.domain.services.VolumeValidator
+import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
+
+/**
+ * Оркестратор: обрабатывает запрос, последовательно выполняя аутентификацию,
+ * контроль доступа и валидацию объёма.
+ * * Класс зависит только от интерфейсов (DIP).
+ */
+@Component
+class RequestProcessor(
+    private val authService: AuthService,
+    private val accessController: AccessController,
+    private val volumeValidator: VolumeValidator,
+    private val resourceRepository: ResourceRepository,
+    private val actionAndPathValidator: ActionAndPathValidator
+) {
+    private val logger = LoggerFactory.getLogger("REQUEST_PROCESSOR")
+
+    fun process(request: AccessRequest): ExitCode {
+
+        // Действие
+        val action: Action? = actionAndPathValidator.actionValidate(request)
+        if (action == null) {
+            logger.warn("Request denied: Invalid format for action or resource path.")
+            return ExitCode.UNKNOWN_ACTION
+        }
+
+        // Проверка пути ресурса
+        if (actionAndPathValidator.pathValidate(request) == null) {
+            logger.warn("Request denied: Invalid format for resource path (${request.path}).")
+            return ExitCode.INVALID_FORMAT
+        }
+
+        // Проверка логина и пароля пользователя
+        val user: User
+        try {
+            user = authService.authenticate(request.login, request.password)
+        } catch (e: InvalidLoginException) {
+            logger.warn("Request denied: Invalid login attempt for user '${request.login}'")
+            return ExitCode.INVALID_LOGIN
+        } catch (e: InvalidPasswordException) {
+            logger.warn("Request denied: Invalid password for user '${request.login}'")
+            return ExitCode.INVALID_PASSWORD
+        }
+        logger.info("Authentication successful for user '${user.login}'. Processing access request...")
+
+        // Ресурс
+        val resource = resourceRepository.findByPath(request.path)
+        if (resource == null) {
+            logger.warn("Request denied: Resource path '${request.path}' not found.")
+            return ExitCode.NOT_FOUND
+        }
+
+        // Доступ
+        val accessCode = accessController.checkPermission(user, request.path, action)
+        if (accessCode != ExitCode.SUCCESS) {
+            logger.warn("Access denied for user '${user.login}' to '${request.path}' (${request.action}). Code: ${accessCode.code}")
+            return accessCode
+        }
+
+        // Volume ресурса
+        val volumeCode = volumeValidator.validate(request.volume, resource)
+        if (volumeCode != ExitCode.SUCCESS) {
+            logger.warn("Volume exceeded for '${request.path}'. Requested: ${request.volume}, Max: ${resource.maxVolume}. Code: ${volumeCode.code}")
+            return volumeCode
+        }
+
+        logger.info("Access granted for user '${user.login}' to '${request.path}' (${request.action}) with volume ${request.volume}.")
+        return ExitCode.SUCCESS
+    }
+}
