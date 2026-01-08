@@ -1,0 +1,44 @@
+package main.kotlin.application.services
+
+import main.kotlin.domain.enums.Action
+import main.kotlin.domain.enums.ExitCode
+import main.kotlin.domain.entities.User
+import main.kotlin.domain.services.AccessController
+import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Service
+
+// Реализация контроля доступа: проверяет права пользователя на ресурс с учётом наследования от родительских путей
+@Service
+open class AccessControllerImpl() : AccessController {
+
+    private val logger = LoggerFactory.getLogger("ACCESS_CTRL")
+
+    override fun checkPermission(
+        user: User,
+        resourcePath: String,
+        action: Action
+    ): ExitCode {
+
+        val pathSegments = resourcePath.split('.')
+
+        for (i in pathSegments.size downTo 1) {
+
+            val currentCheckingPath = pathSegments.subList(0, i).joinToString(".")
+            logger.debug("Verifying permissions for a hierarchical path: $currentCheckingPath")
+
+            val allowedActions = user.permissions[currentCheckingPath]
+
+            if (allowedActions != null) {
+                logger.debug("The right was found for '$currentCheckingPath': $allowedActions")
+
+                if (action in allowedActions) {
+                    logger.info("Access is allowed for $currentCheckingPath: $action (The right is found in the hierarchy).")
+                    return ExitCode.SUCCESS
+                }
+            }
+        }
+
+        logger.warn("Access is denied to $resourcePath: $action (Rights not found in the hierarchy).")
+        return ExitCode.FORBIDDEN
+    }
+}

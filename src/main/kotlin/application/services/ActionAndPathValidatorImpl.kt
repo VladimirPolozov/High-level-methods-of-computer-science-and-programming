@@ -1,0 +1,31 @@
+package main.kotlin.application.services
+
+import main.kotlin.domain.dto.AccessRequest
+import main.kotlin.domain.enums.Action
+import main.kotlin.domain.services.ActionAndPathValidator
+import org.springframework.stereotype.Service
+
+@Service
+class ActionAndPathValidatorImpl() : ActionAndPathValidator {
+
+    private val RESOURCE_PATH_REGEX = "^[a-zA-Z0-9]+(\\.[a-zA-Z0-9]+)*\$".toRegex()
+
+    override fun actionValidate(request: AccessRequest): Action? {
+        val actionString = request.action
+
+        val validatedAction: Action = Action.fromString(actionString.uppercase())
+            ?: return null
+
+        return validatedAction
+    }
+
+    override fun pathValidate(request: AccessRequest): String? {
+        val resourcePath = request.path
+
+        if (resourcePath.isEmpty() || !resourcePath.matches(RESOURCE_PATH_REGEX)) {
+            return null
+        }
+
+        return resourcePath
+    }
+}

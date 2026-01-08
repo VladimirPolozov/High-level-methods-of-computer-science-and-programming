@@ -37,8 +37,8 @@ erDiagram
 
 Описание:
 Интерфейсы ResourceRepository и ResourceRepository остаются, 
-а вот [InMemoryResourceRepositoryImpl.kt](../src/infrastructure/adapters/db/repositories/InMemoryResourceRepositoryImpl.kt)
-и [InMemoryUserRepositoryImpl.kt](../src/infrastructure/adapters/db/repositories/InMemoryUserRepositoryImpl.kt) 
+а вот [InMemoryResourceRepositoryImpl.kt](../src/main/kotlin/infrastructure/adapters/db/repositories/InMemoryResourceRepositoryImpl.kt)
+и [InMemoryUserRepositoryImpl.kt](../src/main/kotlin/infrastructure/adapters/db/repositories/InMemoryUserRepositoryImpl.kt) 
 будут заменены, также в проект добавятся sql скрипты для создания и заполнения, файл
 H2ConnectionProvider.kt для подключения к базе. Также обновим enum класс с ошибками.
 
