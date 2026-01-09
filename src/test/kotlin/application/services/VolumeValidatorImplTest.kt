@@ -1,7 +1,6 @@
 package application.services
 
-import main.kotlin.application.services.VolumeValidatorImpl
-import main.kotlin.domain.entities.Resource
+import domain.entities.Resource
 import main.kotlin.domain.enums.ExitCode
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertEquals

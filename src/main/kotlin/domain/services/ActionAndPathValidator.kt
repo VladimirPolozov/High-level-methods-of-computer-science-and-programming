@@ -1,7 +1,7 @@
-package main.kotlin.domain.services
+package domain.services
 
-import main.kotlin.domain.dto.AccessRequest
-import main.kotlin.domain.enums.Action
+import domain.dto.AccessRequest
+import domain.enums.Action
 
 interface ActionAndPathValidator {
 

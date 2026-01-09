@@ -1,6 +1,6 @@
-package main.kotlin.infrastructure.adapters.mappers
+package infrastructure.adapters.mappers
 
-import main.kotlin.domain.entities.User
+import domain.entities.User
 import org.springframework.stereotype.Component
 import java.sql.ResultSet
 

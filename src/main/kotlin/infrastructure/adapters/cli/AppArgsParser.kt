@@ -1,6 +1,6 @@
-package main.kotlin.infrastructure.adapters.cli
+package infrastructure.adapters.cli
 
-import main.kotlin.domain.dto.AccessRequest
+import domain.dto.AccessRequest
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.required

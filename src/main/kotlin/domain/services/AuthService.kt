@@ -1,6 +1,6 @@
-package main.kotlin.domain.services
+package domain.services
 
-import main.kotlin.domain.entities.User
+import domain.entities.User
 
 interface AuthService {
     fun authenticate(login: String, password: String): User

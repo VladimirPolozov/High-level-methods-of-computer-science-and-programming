@@ -1,13 +1,14 @@
-package main.kotlin.infrastructure.adapters.db.repositories
+package infrastructure.adapters.db.repositories.jdbc
 
-import main.kotlin.domain.entities.Resource
-import main.kotlin.domain.exceptions.DbConnectionException
-import main.kotlin.domain.repository.ResourceRepository
-import main.kotlin.infrastructure.adapters.mappers.ResourceMapper
-import main.kotlin.infrastructure.db.H2ConnectionProvider
+import domain.entities.Resource
+import domain.exceptions.DbConnectionException
+import domain.repository.ResourceRepository
+import infrastructure.adapters.mappers.ResourceMapper
+import infrastructure.db.H2ConnectionProvider
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
 import java.sql.Connection
+import java.sql.PreparedStatement
 import java.sql.ResultSet
 
 @Repository
@@ -20,7 +21,7 @@ class JdbcResourceRepository(
 
     override fun findByPath(path: String): Resource? {
         var connection: Connection? = null
-        var statement: java.sql.PreparedStatement? = null
+        var statement: PreparedStatement? = null
         var resultSet: ResultSet? = null
 
         try {

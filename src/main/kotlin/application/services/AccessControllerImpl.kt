@@ -1,9 +1,9 @@
-package main.kotlin.application.services
+package application.services
 
-import main.kotlin.domain.enums.Action
+import domain.enums.Action
 import main.kotlin.domain.enums.ExitCode
-import main.kotlin.domain.entities.User
-import main.kotlin.domain.services.AccessController
+import domain.entities.User
+import domain.services.AccessController
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 

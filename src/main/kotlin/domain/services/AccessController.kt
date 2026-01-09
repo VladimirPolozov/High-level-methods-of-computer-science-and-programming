@@ -1,7 +1,7 @@
-package main.kotlin.domain.services
+package domain.services
 
-import main.kotlin.domain.enums.Action
-import main.kotlin.domain.entities.User
+import domain.enums.Action
+import domain.entities.User
 import main.kotlin.domain.enums.ExitCode
 
 interface AccessController {

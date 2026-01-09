@@ -1,4 +1,4 @@
-package main.kotlin.domain.exceptions
+package domain.exceptions
 
 import main.kotlin.domain.enums.ExitCode
 

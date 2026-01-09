@@ -1,6 +1,6 @@
-package main.kotlin.domain.repository
+package domain.repository
 
-import main.kotlin.domain.entities.Resource
+import domain.entities.Resource
 
 interface ResourceRepository {
     fun findByPath(path: String): Resource?

@@ -1,11 +1,12 @@
-package main.kotlin.infrastructure.db
+package infrastructure.db
 
 import org.slf4j.LoggerFactory
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.ResultSet
-import main.kotlin.domain.exceptions.DbConnectionException
+import domain.exceptions.DbConnectionException
 import org.springframework.stereotype.Component
+import java.sql.Statement
 
 @Component
 object H2ConnectionProvider {
@@ -37,7 +38,7 @@ object H2ConnectionProvider {
      * Закрывает соединение, Statement и ResultSet.
      * Необходимо вызывать в блоке 'finally'.
      */
-    fun close(connection: Connection?, statement: java.sql.Statement?, resultSet: ResultSet?) {
+    fun close(connection: Connection?, statement: Statement?, resultSet: ResultSet?) {
         resultSet?.close()
         statement?.close()
         try {

@@ -1,11 +1,10 @@
 package application.services
 
-import main.kotlin.application.services.AuthServiceImpl
-import main.kotlin.domain.entities.User
-import main.kotlin.domain.exceptions.InvalidLoginException
-import main.kotlin.domain.exceptions.InvalidPasswordException
-import main.kotlin.domain.repository.UserRepository
-import main.kotlin.infrastructure.adapters.security.HashService
+import domain.entities.User
+import domain.exceptions.InvalidLoginException
+import domain.exceptions.InvalidPasswordException
+import domain.repository.UserRepository
+import infrastructure.adapters.security.HashService
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

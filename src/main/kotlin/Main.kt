@@ -1,16 +1,16 @@
-package main.kotlin
-
-import main.kotlin.application.services.RequestProcessor
+import application.services.RequestProcessor
 import main.kotlin.domain.enums.ExitCode
-import main.kotlin.infrastructure.adapters.cli.AppArgsParser
+import infrastructure.adapters.cli.AppArgsParser
 import org.slf4j.LoggerFactory
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.WebApplicationType
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import kotlin.system.exitProcess
 
 @SpringBootApplication
+@EnableJpaRepositories("main.kotlin.infrastructure.adapters.db.repositories.jpa")
 class SecurityApplication(
     private val parser: AppArgsParser,
     private val processor: RequestProcessor
@@ -52,6 +52,6 @@ class SecurityApplication(
 
 fun main(args: Array<String>) {
     runApplication<SecurityApplication>(*args) {
-        setWebApplicationType(WebApplicationType.NONE) // Отключаем веб-сервер
+        setWebApplicationType(WebApplicationType.NONE)
     }
 }

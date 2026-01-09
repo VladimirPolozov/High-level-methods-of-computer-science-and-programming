@@ -1,4 +1,4 @@
-package main.kotlin.infrastructure.adapters.dto
+package infrastructure.adapters.dto
 
 /**
  * DTO для передачи данных о пользователе между БД и Маппером.

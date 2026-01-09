@@ -1,8 +1,8 @@
-package main.kotlin.application.services
+package application.services
 
-import main.kotlin.domain.entities.Resource
+import domain.entities.Resource
 import main.kotlin.domain.enums.ExitCode
-import main.kotlin.domain.services.VolumeValidator
+import domain.services.VolumeValidator
 import org.springframework.stereotype.Service
 
 

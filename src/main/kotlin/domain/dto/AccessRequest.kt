@@ -1,4 +1,4 @@
-package main.kotlin.domain.dto
+package domain.dto
 
 
 // DTO для входного запроса: содержит логин, пароль, путь к ресурсу, действие и объём

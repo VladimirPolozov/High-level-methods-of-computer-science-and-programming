@@ -1,9 +1,8 @@
-package main.kotlin.infrastructure.adapters.security
+package infrastructure.adapters.security
 
 import org.springframework.stereotype.Component
 import java.security.MessageDigest
 import java.security.SecureRandom
-import java.util.Base64
 
 
 // Синглтон для безопасного хэширования паролей: генерирует соль, хэширует пароль (SHA-256 + соль), поддерживает Base64-конвертацию

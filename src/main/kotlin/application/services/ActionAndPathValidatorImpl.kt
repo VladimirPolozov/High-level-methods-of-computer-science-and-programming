@@ -1,8 +1,8 @@
-package main.kotlin.application.services
+package application.services
 
-import main.kotlin.domain.dto.AccessRequest
-import main.kotlin.domain.enums.Action
-import main.kotlin.domain.services.ActionAndPathValidator
+import domain.dto.AccessRequest
+import domain.enums.Action
+import domain.services.ActionAndPathValidator
 import org.springframework.stereotype.Service
 
 @Service

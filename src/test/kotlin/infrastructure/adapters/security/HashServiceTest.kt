@@ -1,7 +1,6 @@
 package infrastructure.adapters.security
 
 import org.junit.jupiter.api.Test
-import main.kotlin.infrastructure.adapters.security.HashService
 import org.junit.jupiter.api.Assertions.*
 
 class HashServiceTest {

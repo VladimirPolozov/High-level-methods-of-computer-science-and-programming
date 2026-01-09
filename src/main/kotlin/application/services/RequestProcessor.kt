@@ -1,20 +1,19 @@
-package main.kotlin.application.services
+package application.services
 
-import main.kotlin.domain.dto.AccessRequest
-import main.kotlin.domain.entities.User
-import main.kotlin.domain.enums.Action
+import domain.dto.AccessRequest
+import domain.entities.User
+import domain.enums.Action
 import main.kotlin.domain.enums.ExitCode
-import main.kotlin.domain.exceptions.InvalidLoginException
-import main.kotlin.domain.exceptions.InvalidPasswordException
-import main.kotlin.domain.repository.ResourceRepository
+import domain.exceptions.InvalidLoginException
+import domain.exceptions.InvalidPasswordException
+import domain.repository.ResourceRepository
 
 import org.slf4j.LoggerFactory
-import main.kotlin.domain.services.AccessController
-import main.kotlin.domain.services.ActionAndPathValidator
-import main.kotlin.domain.services.AuthService
-import main.kotlin.domain.services.VolumeValidator
+import domain.services.AccessController
+import domain.services.ActionAndPathValidator
+import domain.services.AuthService
+import domain.services.VolumeValidator
 import org.springframework.stereotype.Component
-import org.springframework.stereotype.Service
 
 /**
  * Оркестратор: обрабатывает запрос, последовательно выполняя аутентификацию,

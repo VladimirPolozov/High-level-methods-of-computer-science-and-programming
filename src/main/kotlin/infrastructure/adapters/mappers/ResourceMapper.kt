@@ -1,6 +1,6 @@
-package main.kotlin.infrastructure.adapters.mappers
+package infrastructure.adapters.mappers
 
-import main.kotlin.domain.entities.Resource
+import domain.entities.Resource
 import org.springframework.stereotype.Component
 import java.sql.ResultSet
 

@@ -1,7 +1,7 @@
 package infrastructure.adapters.db
 
-import main.kotlin.domain.entities.User
-import main.kotlin.domain.repository.UserRepository
+import domain.entities.User
+import domain.repository.UserRepository
 
 class MockUserRepository(
     private val expectedLogin: String,

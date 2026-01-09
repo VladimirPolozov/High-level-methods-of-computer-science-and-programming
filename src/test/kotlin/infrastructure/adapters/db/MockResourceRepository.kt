@@ -1,7 +1,7 @@
 package infrastructure.adapters.db
 
-import main.kotlin.domain.entities.Resource
-import main.kotlin.domain.repository.ResourceRepository
+import domain.entities.Resource
+import domain.repository.ResourceRepository
 
 class MockResourceRepository(
     private val existingPaths: Set<String>

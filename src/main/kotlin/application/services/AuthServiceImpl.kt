@@ -1,11 +1,11 @@
-package main.kotlin.application.services
+package application.services
 
-import main.kotlin.domain.entities.User
-import main.kotlin.domain.exceptions.InvalidLoginException
-import main.kotlin.domain.exceptions.InvalidPasswordException
-import main.kotlin.domain.repository.UserRepository
-import main.kotlin.domain.services.AuthService
-import main.kotlin.infrastructure.adapters.security.HashService
+import domain.entities.User
+import domain.exceptions.InvalidLoginException
+import domain.exceptions.InvalidPasswordException
+import domain.repository.UserRepository
+import domain.services.AuthService
+import infrastructure.adapters.security.HashService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 

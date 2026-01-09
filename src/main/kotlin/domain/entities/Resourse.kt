@@ -1,4 +1,4 @@
-package main.kotlin.domain.entities
+package domain.entities
 
 
 // Data class ресурса: содержит имя, максимальный объём

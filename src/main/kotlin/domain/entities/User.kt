@@ -1,6 +1,6 @@
-package main.kotlin.domain.entities
+package domain.entities
 
-import main.kotlin.domain.enums.Action
+import domain.enums.Action
 
 
 // Data class пользователя: хранит логин, хэш пароля, соль и права доступа к ресурсам (в виде путей => действия)

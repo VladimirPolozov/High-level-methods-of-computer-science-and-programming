@@ -1,14 +1,15 @@
-package main.kotlin.infrastructure.adapters.db.repositories
+package infrastructure.adapters.db.repositories.jdbc
 
-import main.kotlin.domain.enums.Action
-import main.kotlin.domain.entities.User
-import main.kotlin.domain.exceptions.DbConnectionException
-import main.kotlin.domain.repository.UserRepository
-import main.kotlin.infrastructure.adapters.mappers.UserMapper
-import main.kotlin.infrastructure.db.H2ConnectionProvider
+import domain.enums.Action
+import domain.entities.User
+import domain.exceptions.DbConnectionException
+import domain.repository.UserRepository
+import infrastructure.adapters.mappers.UserMapper
+import infrastructure.db.H2ConnectionProvider
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
 import java.sql.Connection
+import java.sql.PreparedStatement
 import java.sql.ResultSet
 
 /**
@@ -25,7 +26,7 @@ class JdbcUserRepository(
 
     override fun findByLogin(login: String): User? {
         var connection: Connection? = null
-        var statement: java.sql.PreparedStatement? = null
+        var statement: PreparedStatement? = null
         var userResultSet: ResultSet? = null
 
         try {
@@ -82,7 +83,7 @@ class JdbcUserRepository(
      */
     private fun loadPermissions(connection: Connection, login: String): Map<String, Set<Action>> {
         val permissionsMap = mutableMapOf<String, MutableSet<Action>>()
-        var statement: java.sql.PreparedStatement? = null
+        var statement: PreparedStatement? = null
         var rightsResultSet: ResultSet? = null
 
         val rightsSql = """

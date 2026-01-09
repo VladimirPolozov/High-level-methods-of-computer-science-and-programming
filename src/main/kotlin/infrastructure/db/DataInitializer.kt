@@ -1,10 +1,11 @@
-package main.kotlin.infrastructure.db
+package infrastructure.db
 
 import jakarta.annotation.PostConstruct
-import main.kotlin.domain.repository.UserRepository
-import main.kotlin.infrastructure.adapters.security.HashService
+import domain.repository.UserRepository
+import infrastructure.adapters.security.HashService
 import org.springframework.stereotype.Component
 import org.slf4j.LoggerFactory
+import kotlin.collections.iterator
 
 @Component
 class DataInitializer(

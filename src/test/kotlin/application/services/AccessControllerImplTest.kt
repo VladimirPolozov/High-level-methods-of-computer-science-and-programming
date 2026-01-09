@@ -1,8 +1,7 @@
 package application.services
 
-import main.kotlin.application.services.AccessControllerImpl
-import main.kotlin.domain.entities.User
-import main.kotlin.domain.enums.Action
+import domain.entities.User
+import domain.enums.Action
 import main.kotlin.domain.enums.ExitCode
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

@@ -1,6 +1,6 @@
-package main.kotlin.domain.services
+package domain.services
 
-import main.kotlin.domain.entities.Resource
+import domain.entities.Resource
 import main.kotlin.domain.enums.ExitCode
 
 interface VolumeValidator {
